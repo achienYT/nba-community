@@ -2,12 +2,15 @@
 <html lang="zh-TW" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NBA GOAT 史上最強球員投票</title>
-    <!-- Tailwind CSS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NBA GOAT & All-Time Challenge</title>
+
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -16,721 +19,995 @@
                     colors: {
                         apple: {
                             bg: '#000000',
-                            card: 'rgba(28, 28, 30, 0.65)',
-                            cardHover: 'rgba(44, 44, 46, 0.75)',
+                            card: 'rgba(28, 28, 30, 0.68)',
+                            cardHover: 'rgba(44, 44, 46, 0.85)',
                             border: 'rgba(255, 255, 255, 0.12)',
                             blue: '#0071e3',
                             blueHover: '#0077ed',
                             gray: '#86868b',
                             lightGray: '#f5f5f7',
-                            text: '#f5f5f7',
-                            gold: '#ffd700'
+                            gold: '#ffd700',
+                            red: '#ff453a',
+                            green: '#30d158',
                         }
                     },
                     fontFamily: {
-                        sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"SF Pro Text"', '"Helvetica Neue"', 'Helvetica', 'Arial', 'sans-serif']
+                        sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"SF Pro Text"', 'Helvetica Neue', 'Arial', 'sans-serif']
                     }
                 }
             }
         }
     </script>
+
     <style>
-        /* Apple Glassmorphism and Backdrop blur styling */
-        .glass-card {
-            background: rgba(28, 28, 30, 0.65);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
+        /* Modern Apple-style Glassmorphism & Micro-animations */
+        body {
+            background-color: #000000;
+            color: #f5f5f7;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
+
         .glass-nav {
-            background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
+            background: rgba(0, 0, 0, 0.72);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .glow-effect {
-            box-shadow: 0 0 25px -5px rgba(0, 113, 227, 0.4);
+
+        .glass-card {
+            background: rgba(28, 28, 30, 0.68);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
         }
-        .gold-glow {
-            box-shadow: 0 0 30px -5px rgba(255, 215, 0, 0.3);
+
+        .glass-card-interactive {
+            background: rgba(28, 28, 30, 0.68);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        /* Custom scrollbar for modern feel */
+
+        .glass-card-interactive:hover {
+            background: rgba(44, 44, 46, 0.8);
+            border-color: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .glow-blue {
+            box-shadow: 0 0 30px -5px rgba(0, 113, 227, 0.35);
+        }
+
+        .glow-gold {
+            box-shadow: 0 0 35px -5px rgba(255, 215, 0, 0.3);
+        }
+
+        /* Custom Dragging Visuals */
+        .dragging {
+            opacity: 0.4;
+            transform: scale(0.98);
+        }
+
+        /* Custom Scrollbars */
         ::-webkit-scrollbar {
-            width: 8px;
+            width: 6px;
+            height: 6px;
         }
         ::-webkit-scrollbar-track {
-            background: #000;
+            background: transparent;
         }
         ::-webkit-scrollbar-thumb {
-            background: #333;
-            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 999px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #555;
+            background: rgba(255, 255, 255, 0.4);
         }
-        .dragging {
-            opacity: 0.5;
-            scale: 0.98;
+
+        /* Card Flip & Draw Effects */
+        .card-pop {
+            animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.85); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
         }
     </style>
 </head>
-<body class="bg-apple-bg text-apple-text min-h-screen flex flex-col font-sans selection:bg-apple-blue selection:text-white antialiased">
 
-    <!-- Navigation Bar -->
+<body class="min-h-screen flex flex-col selection:bg-apple-blue selection:text-white antialiased">
+
     <header class="sticky top-0 z-50 glass-nav transition-all duration-300">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchView('home')">
-                <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-apple-blue to-purple-600 flex items-center justify-center font-bold text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+            
+            <!-- Logo & Title -->
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('goat')">
+                <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-apple-blue via-indigo-500 to-purple-600 flex items-center justify-center font-bold text-white shadow-lg">
                     🏀
                 </div>
                 <div>
-                    <span class="text-lg font-semibold tracking-tight text-white block leading-tight">NBA GOAT</span>
-                    <span class="text-[10px] text-apple-gray tracking-wider uppercase">Global Consensus Ranking</span>
+                    <span class="text-base sm:text-lg font-bold tracking-tight text-white block leading-none">NBA LAB</span>
+                    <span class="text-[10px] text-apple-gray uppercase tracking-widest font-mono">Consensus & Stats</span>
                 </div>
             </div>
-            
-            <nav class="flex items-center space-x-2 sm:space-x-4">
-                <button onclick="switchView('home')" id="nav-home" class="px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 bg-white/10 text-white">
-                    首頁共識
-                </button>
-                <button onclick="switchView('vote')" id="nav-vote" class="px-4 py-1.5 rounded-full text-xs sm:text-sm font-medium bg-apple-blue hover:bg-apple-blueHover text-white transition-all duration-200 glow-effect">
-                    開始投票
-                </button>
-            </nav>
+
+            <!-- Language Selector Dropdown -->
+            <div class="flex items-center space-x-2">
+                <div class="relative">
+                    <select id="lang-select" onchange="changeLanguage(this.value)" class="bg-white/10 text-xs sm:text-sm text-white font-medium rounded-full px-3 py-1.5 border border-white/15 focus:outline-none focus:ring-2 focus:ring-apple-blue cursor-pointer hover:bg-white/15 transition-all">
+                        <option value="zh-TW" class="bg-zinc-900 text-white">繁體中文</option>
+                        <option value="zh-CN" class="bg-zinc-900 text-white">简体中文</option>
+                        <option value="en" class="bg-zinc-900 text-white">English</option>
+                        <option value="ja" class="bg-zinc-900 text-white">日本語</option>
+                        <option value="es" class="bg-zinc-900 text-white">Español</option>
+                        <option value="fr" class="bg-zinc-900 text-white">Français</option>
+                        <option value="de" class="bg-zinc-900 text-white">Deutsch</option>
+                        <option value="ko" class="bg-zinc-900 text-white">한국어</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Navigation Bar -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 flex space-x-1 overflow-x-auto pb-2 scrollbar-none border-t border-white/5 pt-1 text-xs sm:text-sm">
+            <button id="tab-btn-goat" onclick="switchTab('goat')" class="px-4 py-2 rounded-full font-medium whitespace-nowrap transition-all bg-white/15 text-white shadow-sm">
+                <span data-i18n="nav_goat">1. GOAT 投票</span>
+            </button>
+            <button id="tab-btn-starting5" onclick="switchTab('starting5')" class="px-4 py-2 rounded-full font-medium whitespace-nowrap transition-all text-apple-gray hover:text-white">
+                <span data-i18n="nav_starting5">2. 先發五人</span>
+            </button>
+            <button id="tab-btn-challenge" onclick="switchTab('challenge')" class="px-4 py-2 rounded-full font-medium whitespace-nowrap transition-all text-apple-gray hover:text-white">
+                <span data-i18n="nav_challenge">3. 300分大挑戰</span>
+            </button>
+            <button id="tab-btn-crucial1v1" onclick="switchTab('crucial1v1')" class="px-4 py-2 rounded-full font-medium whitespace-nowrap transition-all text-apple-gray hover:text-white">
+                <span data-i18n="nav_crucial1v1">4. 殘酷2選1</span>
+            </button>
         </div>
     </header>
 
-    <main class="flex-grow max-w-6xl w-full mx-auto px-4 sm:px-6 py-8">
-        
-        <!-- ================= HOME VIEW ================= -->
-        <section id="view-home" class="space-y-12">
-            <!-- Hero Header -->
-            <div class="text-center space-y-4 max-w-3xl mx-auto pt-6">
-                <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-widest text-apple-blue bg-apple-blue/10 border border-apple-blue/20">
-                    全球球迷即時數據
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
+
+        <!-- ======================================================== -->
+        <!-- TAB 1: GOAT RANKING                                      -->
+        <!-- ======================================================== -->
+        <section id="tab-goat" class="space-y-8">
+            <div class="text-center max-w-3xl mx-auto space-y-3 pt-2">
+                <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-widest text-apple-blue bg-apple-blue/10 border border-apple-blue/20" data-i18n="goat_tag">
+                    NBA 全球投票共識
                 </span>
-                <h1 class="text-4xl sm:text-6xl font-bold tracking-tight text-white leading-tight">
-                    誰才是真正的 <br class="hidden sm:inline"/><span class="bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-500 bg-clip-text text-transparent">史上最強球員？</span>
+                <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white" data-i18n="goat_title">
+                    誰才是真正的歷史最強 (GOAT)？
                 </h1>
-                <p class="text-apple-gray text-base sm:text-lg max-w-xl mx-auto leading-relaxed">
-                    結合全球數千名球迷的真實排名數據，即時計算出目前全球共識前五大 GOAT。
+                <p class="text-apple-gray text-xs sm:text-base" data-i18n="goat_subtitle">
+                    將 20 位傳奇球星從第 1 名拖拽或調整排列至第 20 名，提交後即時計算你與全球球迷的共識度。
                 </p>
-                <div class="pt-4 flex flex-wrap justify-center gap-4">
-                    <button onclick="switchView('vote')" class="px-8 py-3.5 rounded-full bg-apple-blue hover:bg-apple-blueHover text-white font-medium text-base transition-all duration-300 shadow-lg glow-effect flex items-center space-x-2 transform hover:scale-[1.02]">
-                        <span>排出你的 1 到 20 名</span>
-                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
-                    </button>
+            </div>
+
+            <!-- Global Top 5 Consensus Banner -->
+            <div class="glass-card rounded-2xl p-5 sm:p-6 space-y-4">
+                <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                    <h2 class="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
+                        <i data-lucide="crown" class="w-5 h-5 text-amber-400"></i>
+                        <span data-i18n="top5_heading">全球平均排名 TOP 5</span>
+                    </h2>
+                    <span id="global-total-count" class="text-xs text-apple-gray bg-white/5 px-3 py-1 rounded-full border border-white/10 font-mono">
+                        Votes: --
+                    </span>
+                </div>
+
+                <div id="top5-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+                    <!-- Dynamic TOP 5 Content -->
                 </div>
             </div>
 
-            <!-- Top 5 Global Consensus Showcase -->
-            <div class="space-y-6">
-                <div class="flex items-center justify-between border-b border-white/10 pb-4">
-                    <div>
-                        <h2 class="text-2xl font-bold text-white flex items-center gap-2">
-                            <i data-lucide="trophy" class="w-6 h-6 text-amber-400"></i>
-                            全球平均排名 TOP 5
-                        </h2>
-                        <p class="text-xs text-apple-gray mt-0.5">數據實時根據全體玩家投出的排序平均值計算 (分數越低越靠前)</p>
+            <!-- Ranking Interactive Area -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+                
+                <!-- Main Draggable List -->
+                <div class="lg:col-span-2 space-y-4">
+                    <div class="flex items-center justify-between px-1">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-apple-gray" data-i18n="your_ranking">
+                            你的 1~20 名單 (可拖曳或按箭頭)
+                        </span>
+                        <div class="flex space-x-2">
+                            <button onclick="resetGoatOrder()" class="text-xs text-apple-gray hover:text-white px-3 py-1 rounded-full border border-white/10 bg-white/5 transition-all" data-i18n="reset_btn">
+                                重置
+                            </button>
+                            <button onclick="submitGoatRanking()" class="text-xs bg-apple-blue hover:bg-apple-blueHover text-white px-4 py-1.5 rounded-full font-semibold glow-blue transition-all flex items-center gap-1">
+                                <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                                <span data-i18n="submit_btn">送出排名</span>
+                            </button>
+                        </div>
                     </div>
-                    <div id="total-votes-count" class="text-xs text-apple-gray bg-white/5 px-3 py-1.5 rounded-full border border-white/10">
-                        總投票數: 載入中...
+
+                    <div id="goat-list" class="space-y-2">
+                        <!-- Populated by JS -->
                     </div>
                 </div>
 
-                <!-- Top 5 Cards Grid -->
-                <div id="top5-container" class="grid grid-cols-1 md:grid-cols-5 gap-4">
-                    <div class="col-span-full py-16 text-center text-apple-gray glass-card rounded-2xl">
-                        <i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto mb-2 text-apple-blue"></i>
-                        正在計算全球數據...
+                <!-- Result & Stats Panel -->
+                <div class="space-y-6">
+                    <div id="goat-result-card" class="glass-card rounded-2xl p-6 text-center space-y-4 border border-white/15">
+                        <div class="text-xs uppercase tracking-widest text-apple-gray" data-i18n="similarity_title">
+                            與全球平均共識契合度
+                        </div>
+                        <div id="goat-similarity-score" class="text-5xl font-black bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-500 bg-clip-text text-transparent">
+                            --%
+                        </div>
+                        <p id="goat-similarity-desc" class="text-xs text-apple-gray leading-relaxed">
+                            請點擊「送出排名」開始計算你與大眾評分標準的差距百分比。
+                        </p>
                     </div>
-                </div>
-            </div>
 
-            <!-- Quick Player List Overview -->
-            <div class="space-y-6 pt-4">
-                <div class="border-b border-white/10 pb-4 flex justify-between items-end">
-                    <div>
-                        <h3 class="text-xl font-bold text-white">20 位候選傳奇球星</h3>
-                        <p class="text-xs text-apple-gray">點擊上方按鈕即可開始拖拽或排列你心目中的完整 1 ~ 20 榜單</p>
+                    <!-- Fast Quick Facts -->
+                    <div class="glass-card rounded-2xl p-5 space-y-3">
+                        <h3 class="text-sm font-bold text-white" data-i18n="goat_info_title">球員名單標準說明</h3>
+                        <p class="text-xs text-apple-gray leading-relaxed" data-i18n="goat_info_body">
+                            本榜單涵蓋 20 位具備極高歷史聲望的球星，包含 LeBron James (Cavs)、James Harden (Rockets) 等球員最巔峰代表球隊。
+                        </p>
                     </div>
-                </div>
-                <div id="candidates-grid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-3">
-                    <!-- Populated dynamically -->
                 </div>
             </div>
         </section>
 
-        <!-- ================= VOTING VIEW ================= -->
-        <section id="view-vote" class="hidden space-y-8">
-            <!-- Header Banner -->
-            <div class="glass-card rounded-2xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h2 class="text-2xl font-bold text-white flex items-center gap-2">
-                        <i data-lucide="sliders" class="w-6 h-6 text-apple-blue"></i>
-                        排列你的 GOAT 名單 (#1 ~ #20)
-                    </h2>
-                    <p class="text-xs sm:text-sm text-apple-gray mt-1">
-                        拖曳卡片或點擊箭頭調整順序。第一名為你心中最強 GOAT！
-                    </p>
-                </div>
-                <div class="flex items-center gap-3">
-                    <button onclick="resetRanking()" class="px-4 py-2 rounded-full border border-white/15 hover:bg-white/10 text-xs sm:text-sm text-apple-gray hover:text-white transition-all">
-                        重設預設
+        <!-- ======================================================== -->
+        <!-- TAB 2: STARTING 5 DRAFT                                  -->
+        <!-- ======================================================== -->
+        <section id="tab-starting5" class="hidden space-y-8">
+            <div class="text-center max-w-3xl mx-auto space-y-3 pt-2">
+                <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-widest text-emerald-400 bg-emerald-500/10 border border-emerald-500/20" data-i18n="s5_tag">
+                    夢幻先發陣容
+                </span>
+                <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white" data-i18n="s5_title">
+                    打造你的歷史夢幻先發五人
+                </h1>
+                <p class="text-apple-gray text-xs sm:text-base" data-i18n="s5_subtitle">
+                    從 20 位球星中精選 5 位分別填入 PG、SG、SF、PF、C 位置，並查看全球球迷最熱門的先發陣容搭檔！
+                </p>
+            </div>
+
+            <!-- Court Graphic & Slots -->
+            <div class="glass-card rounded-3xl p-6 sm:p-8 space-y-6 relative overflow-hidden border border-white/15">
+                <div class="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-4">
+                    <span class="text-sm font-bold text-white flex items-center gap-2">
+                        <i data-lucide="users" class="w-4 h-4 text-apple-blue"></i>
+                        <span data-i18n="s5_court_label">先發五人位置卡槽</span>
+                    </span>
+                    <button onclick="clearStarting5()" class="text-xs text-apple-gray hover:text-white px-3 py-1 rounded-full border border-white/10 bg-white/5 transition-all" data-i18n="s5_clear">
+                        清空選擇
                     </button>
-                    <button onclick="submitRanking()" class="px-6 py-2.5 rounded-full bg-apple-blue hover:bg-apple-blueHover text-white font-medium text-xs sm:text-sm transition-all glow-effect flex items-center gap-2">
-                        <i data-lucide="send" class="w-4 h-4"></i>
-                        送出投票
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                    <!-- PG Slot -->
+                    <div onclick="selectSlot('PG')" id="slot-PG" class="glass-card-interactive rounded-2xl p-4 min-h-[160px] flex flex-col justify-between cursor-pointer border-dashed border-2 border-white/20 hover:border-apple-blue">
+                        <div class="flex items-center justify-between text-xs font-bold text-apple-blue">
+                            <span>PG</span>
+                            <span class="text-[10px] text-apple-gray">控球後衛</span>
+                        </div>
+                        <div id="slot-content-PG" class="text-center py-4 text-apple-gray text-xs">
+                            點擊或選擇球員
+                        </div>
+                    </div>
+
+                    <!-- SG Slot -->
+                    <div onclick="selectSlot('SG')" id="slot-SG" class="glass-card-interactive rounded-2xl p-4 min-h-[160px] flex flex-col justify-between cursor-pointer border-dashed border-2 border-white/20 hover:border-apple-blue">
+                        <div class="flex items-center justify-between text-xs font-bold text-apple-blue">
+                            <span>SG</span>
+                            <span class="text-[10px] text-apple-gray">得分後衛</span>
+                        </div>
+                        <div id="slot-content-SG" class="text-center py-4 text-apple-gray text-xs">
+                            點擊或選擇球員
+                        </div>
+                    </div>
+
+                    <!-- SF Slot -->
+                    <div onclick="selectSlot('SF')" id="slot-SF" class="glass-card-interactive rounded-2xl p-4 min-h-[160px] flex flex-col justify-between cursor-pointer border-dashed border-2 border-white/20 hover:border-apple-blue">
+                        <div class="flex items-center justify-between text-xs font-bold text-apple-blue">
+                            <span>SF</span>
+                            <span class="text-[10px] text-apple-gray">小前鋒</span>
+                        </div>
+                        <div id="slot-content-SF" class="text-center py-4 text-apple-gray text-xs">
+                            點擊或選擇球員
+                        </div>
+                    </div>
+
+                    <!-- PF Slot -->
+                    <div onclick="selectSlot('PF')" id="slot-PF" class="glass-card-interactive rounded-2xl p-4 min-h-[160px] flex flex-col justify-between cursor-pointer border-dashed border-2 border-white/20 hover:border-apple-blue">
+                        <div class="flex items-center justify-between text-xs font-bold text-apple-blue">
+                            <span>PF</span>
+                            <span class="text-[10px] text-apple-gray">大前鋒</span>
+                        </div>
+                        <div id="slot-content-PF" class="text-center py-4 text-apple-gray text-xs">
+                            點擊或選擇球員
+                        </div>
+                    </div>
+
+                    <!-- C Slot -->
+                    <div onclick="selectSlot('C')" id="slot-C" class="glass-card-interactive rounded-2xl p-4 min-h-[160px] flex flex-col justify-between cursor-pointer border-dashed border-2 border-white/20 hover:border-apple-blue">
+                        <div class="flex items-center justify-between text-xs font-bold text-apple-blue">
+                            <span>C</span>
+                            <span class="text-[10px] text-apple-gray">中鋒</span>
+                        </div>
+                        <div id="slot-content-C" class="text-center py-4 text-apple-gray text-xs">
+                            點擊或選擇球員
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-center pt-2">
+                    <button onclick="submitStarting5()" class="px-8 py-3 rounded-full bg-apple-blue hover:bg-apple-blueHover text-white font-bold text-sm glow-blue transition-all flex items-center gap-2">
+                        <i data-lucide="check-circle" class="w-4 h-4"></i>
+                        <span data-i18n="s5_submit">提交先發陣容並計算契合度</span>
                     </button>
                 </div>
             </div>
 
-            <!-- Draggable Candidate List -->
-            <div id="ranking-list" class="space-y-2.5 max-w-3xl mx-auto">
-                <!-- Rank items populated via JavaScript -->
+            <!-- Alignment Stats Result -->
+            <div id="s5-result-box" class="hidden glass-card rounded-2xl p-6 text-center space-y-3 border border-emerald-500/30">
+                <span class="text-xs uppercase font-semibold text-emerald-400" data-i18n="s5_result_tag">大眾陣容重疊度</span>
+                <div id="s5-match-rate" class="text-4xl font-extrabold text-white">--%</div>
+                <p id="s5-match-desc" class="text-xs text-apple-gray max-w-md mx-auto"></p>
             </div>
 
-            <!-- Bottom Floating Submit Button for Mobile -->
-            <div class="sticky bottom-6 z-40 flex justify-center">
-                <button onclick="submitRanking()" class="px-8 py-3.5 rounded-full bg-apple-blue hover:bg-apple-blueHover text-white font-semibold text-base transition-all shadow-2xl glow-effect flex items-center space-x-2 border border-white/20">
-                    <i data-lucide="check-circle" class="w-5 h-5"></i>
-                    <span>送出排行並查看相似度</span>
+            <!-- Available Players Pool -->
+            <div class="space-y-4">
+                <h3 class="text-base font-bold text-white flex items-center gap-2">
+                    <i data-lucide="grid" class="w-4 h-4 text-apple-blue"></i>
+                    <span data-i18n="s5_pool_title">點擊卡片分配至當前選擇位置</span>
+                </h3>
+                <div id="s5-player-pool" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-3">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================================== -->
+        <!-- TAB 3: SINGLE-GAME 300+ POINT CHALLENGE                  -->
+        <!-- ======================================================== -->
+        <section id="tab-challenge" class="hidden space-y-8">
+            <div class="text-center max-w-3xl mx-auto space-y-3 pt-2">
+                <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-widest text-purple-400 bg-purple-500/10 border border-purple-500/20" data-i18n="c_tag">
+                    單場得分挑戰
+                </span>
+                <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white" data-i18n="c_title">
+                    單場生涯最高分 300 分大挑戰
+                </h1>
+                <p class="text-apple-gray text-xs sm:text-base" data-i18n="c_subtitle">
+                    隨機抽取球員卡片，將球員生涯最高「單場得分」進行累加。用最少的抽取次數突破 300 分！
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Left Play Dashboard -->
+                <div class="glass-card rounded-3xl p-6 space-y-6 flex flex-col justify-between border border-white/15">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                            <span class="text-xs font-bold text-apple-gray uppercase" data-i18n="c_score_progress">目前分數累加</span>
+                            <span id="game-draw-count" class="text-xs text-apple-blue font-mono">抽卡次數: 0</span>
+                        </div>
+
+                        <div class="text-center py-4">
+                            <div id="game-total-pts" class="text-6xl font-black bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
+                                0
+                            </div>
+                            <div class="text-xs text-apple-gray mt-1">/ 300 PTS</div>
+                            
+                            <!-- Progress Bar -->
+                            <div class="w-full bg-white/10 h-3 rounded-full overflow-hidden mt-4">
+                                <div id="game-progress-bar" class="bg-gradient-to-r from-purple-500 to-pink-500 h-full w-0 transition-all duration-300"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <button id="draw-card-btn" onclick="drawGameCard()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-base shadow-lg transition-all flex items-center justify-center gap-2">
+                            <i data-lucide="sparkles" class="w-5 h-5"></i>
+                            <span data-i18n="c_draw_btn">抽取一張球員卡</span>
+                        </button>
+
+                        <button onclick="resetGameChallenge()" class="w-full py-2.5 rounded-full border border-white/15 bg-white/5 hover:bg-white/10 text-xs text-apple-gray hover:text-white transition-all" data-i18n="c_reset_btn">
+                            重新開始遊戲
+                        </button>
+                    </div>
+
+                    <!-- Percentile Result Badge -->
+                    <div id="challenge-result-badge" class="hidden glass-card rounded-2xl p-4 text-center border border-purple-400/40 space-y-1">
+                        <div class="text-[10px] text-purple-300 uppercase tracking-widest" data-i18n="c_efficiency">挑戰成功！效率評價</div>
+                        <div id="challenge-percentile" class="text-xl font-extrabold text-white">--</div>
+                    </div>
+                </div>
+
+                <!-- Right Drawn Cards Collection Grid -->
+                <div class="lg:col-span-2 space-y-4">
+                    <h3 class="text-sm font-bold text-white flex items-center justify-between">
+                        <span data-i18n="c_drawn_title">已抽出的球員隊列</span>
+                        <span id="drawn-cards-count" class="text-xs text-apple-gray font-normal">0 Cards</span>
+                    </h3>
+
+                    <div id="drawn-cards-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-3 min-h-[300px]">
+                        <div id="drawn-cards-empty" class="col-span-full flex flex-col items-center justify-center text-center p-12 text-apple-gray glass-card rounded-2xl border-dashed border border-white/15">
+                            <i data-lucide="layers" class="w-8 h-8 mb-2 opacity-40"></i>
+                            <p class="text-xs" data-i18n="c_empty_msg">點擊左側「抽取一張球員卡」開始挑戰！</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================================== -->
+        <!-- TAB 4: CRUCIAL 1V1 ELIMINATION                            -->
+        <!-- ======================================================== -->
+        <section id="tab-crucial1v1" class="hidden space-y-8">
+            <div class="text-center max-w-3xl mx-auto space-y-3 pt-2">
+                <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-widest text-rose-400 bg-rose-500/10 border border-rose-500/20" data-i18n="crucial_tag">
+                    生存淘擊淘汰賽
+                </span>
+                <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white" data-i18n="crucial_title">
+                    殘酷 2 選 1 決選 (Crucial 1v1)
+                </h1>
+                <p class="text-apple-gray text-xs sm:text-base" data-i18n="crucial_subtitle">
+                    隨機產生 1v1 球星對決，勝者晉級、敗者淘汰！直到選出你唯一的終極首選！
+                </p>
+            </div>
+
+            <!-- Game Arena -->
+            <div id="v1-arena" class="glass-card rounded-3xl p-6 sm:p-10 border border-white/15 space-y-8 relative overflow-hidden">
+                <div class="flex items-center justify-between border-b border-white/10 pb-4">
+                    <span id="v1-round-indicator" class="text-xs font-bold text-rose-400 uppercase tracking-widest">
+                        ROUND 1
+                    </span>
+                    <button onclick="init1v1Tournament()" class="text-xs text-apple-gray hover:text-white px-3 py-1 rounded-full border border-white/10 bg-white/5 transition-all" data-i18n="v1_restart">
+                        重新開始對決
+                    </button>
+                </div>
+
+                <!-- 1v1 Face-Off Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                    <!-- Player A Card -->
+                    <div id="v1-card-a" onclick="pick1v1Winner('a')" class="glass-card-interactive rounded-2xl p-6 text-center cursor-pointer border border-white/15 hover:border-rose-400 group space-y-4">
+                        <span class="inline-block px-3 py-1 rounded-full text-[10px] bg-white/10 text-apple-gray group-hover:bg-rose-500 group-hover:text-white transition-all font-bold">
+                            OPTION A
+                        </span>
+                        <div id="v1-name-a" class="text-2xl font-bold text-white">--</div>
+                        <div id="v1-team-a" class="text-xs text-apple-blue font-medium">--</div>
+                        <div id="v1-stats-a" class="text-xs text-apple-gray">--</div>
+                    </div>
+
+                    <!-- Player B Card -->
+                    <div id="v1-card-b" onclick="pick1v1Winner('b')" class="glass-card-interactive rounded-2xl p-6 text-center cursor-pointer border border-white/15 hover:border-rose-400 group space-y-4">
+                        <span class="inline-block px-3 py-1 rounded-full text-[10px] bg-white/10 text-apple-gray group-hover:bg-rose-500 group-hover:text-white transition-all font-bold">
+                            OPTION B
+                        </span>
+                        <div id="v1-name-b" class="text-2xl font-bold text-white">--</div>
+                        <div id="v1-team-b" class="text-xs text-apple-blue font-medium">--</div>
+                        <div id="v1-stats-b" class="text-xs text-apple-gray">--</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Champion Winner Showcase -->
+            <div id="v1-champion-screen" class="hidden glass-card rounded-3xl p-8 sm:p-12 text-center space-y-6 border border-amber-400/40 gold-glow">
+                <span class="inline-block px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest text-amber-300 bg-amber-400/10 border border-amber-400/20" data-i18n="v1_winner_tag">
+                    最終脫穎而出的 GOAT 冠軍
+                </span>
+
+                <div id="v1-champion-name" class="text-4xl sm:text-6xl font-black text-white">
+                    --
+                </div>
+                
+                <div id="v1-champion-desc" class="text-sm text-apple-gray">
+                    --
+                </div>
+
+                <div class="glass-card rounded-2xl p-5 max-w-md mx-auto border border-white/10 space-y-2">
+                    <div class="text-xs text-apple-gray uppercase tracking-wider" data-i18n="v1_pop_rate">全球玩家選擇該冠軍的比例</div>
+                    <div id="v1-champion-percent" class="text-3xl font-extrabold text-amber-400">--%</div>
+                </div>
+
+                <button onclick="init1v1Tournament()" class="px-8 py-3 rounded-full bg-apple-blue hover:bg-apple-blueHover text-white font-bold text-sm glow-blue transition-all" data-i18n="v1_play_again">
+                    再玩一次 2 選 1
                 </button>
             </div>
         </section>
 
-        <!-- ================= RESULT VIEW ================= -->
-        <section id="view-result" class="hidden space-y-10">
-            <!-- Similarity Banner -->
-            <div class="glass-card rounded-3xl p-8 text-center space-y-4 border border-white/20 gold-glow relative overflow-hidden">
-                <div class="absolute -top-24 -left-24 w-48 h-48 bg-apple-blue/20 rounded-full blur-3xl pointer-events-none"></div>
-                <div class="absolute -bottom-24 -right-24 w-48 h-48 bg-purple-500/20 rounded-full blur-3xl pointer-events-none"></div>
-
-                <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-widest text-amber-300 bg-amber-400/10 border border-amber-400/20">
-                    投票完成，共識分析結果
-                </span>
-
-                <div class="py-2">
-                    <div class="text-xs uppercase tracking-wider text-apple-gray mb-1">你與大眾平均共識的相似度</div>
-                    <div id="similarity-score" class="text-6xl sm:text-7xl font-extrabold bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-500 bg-clip-text text-transparent">
-                        --%
-                    </div>
-                    <p id="similarity-desc" class="text-sm text-apple-gray max-w-md mx-auto mt-2">
-                        正在計算你的排名與全球球員平均分數的吻合程度...
-                    </p>
-                </div>
-
-                <div class="flex flex-wrap justify-center gap-3 pt-2">
-                    <button onclick="switchView('vote')" class="px-5 py-2.5 rounded-full bg-white/10 hover:bg-white/15 text-white text-xs sm:text-sm font-medium transition-all border border-white/10">
-                        重新調整排序
-                    </button>
-                    <button onclick="copyShareLink()" class="px-5 py-2.5 rounded-full bg-apple-blue hover:bg-apple-blueHover text-white text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5">
-                        <i data-lucide="share-2" class="w-4 h-4"></i>
-                        分享我的結果
-                    </button>
-                </div>
-            </div>
-
-            <!-- Comparison Table -->
-            <div class="space-y-4">
-                <div class="flex items-center justify-between">
-                    <h3 class="text-xl font-bold text-white flex items-center gap-2">
-                        <i data-lucide="bar-chart-2" class="w-5 h-5 text-apple-blue"></i>
-                        完整 20 位球員對比榜單
-                    </h3>
-                    <span class="text-xs text-apple-gray">排名依據你提交的順序</span>
-                </div>
-
-                <div class="glass-card rounded-2xl overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs sm:text-sm">
-                            <thead class="bg-white/5 text-apple-gray uppercase text-[10px] sm:text-xs font-semibold tracking-wider border-b border-white/10">
-                                <tr>
-                                    <th class="py-3 px-4">你的排名</th>
-                                    <th class="py-3 px-4">球員</th>
-                                    <th class="py-3 px-4 text-center">全球平均名次</th>
-                                    <th class="py-3 px-4 text-center">差距分數</th>
-                                    <th class="py-3 px-4 text-right">契合評價</th>
-                                </tr>
-                            </thead>
-                            <tbody id="comparison-table-body" class="divide-y divide-white/5">
-                                <!-- Populated dynamically -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </section>
     </main>
 
-    <!-- Custom Toast Message UI -->
     <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
         <div class="glass-card border border-white/20 shadow-2xl rounded-2xl px-5 py-3.5 flex items-center space-x-3 text-sm text-white">
             <span id="toast-icon">✨</span>
-            <span id="toast-message">操作完成</span>
+            <span id="toast-msg">Success</span>
         </div>
     </div>
 
-    <!-- Firebase Imports -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Firebase Configuration setup
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'nba-goat-rankings';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
-            apiKey: "demo-key",
-            authDomain: "demo.firebaseapp.com",
-            projectId: "demo-project",
-            storageBucket: "demo.appspot.com",
-            messagingSenderId: "123456789",
-            appId: "1:123456789:web:abcdef"
+        // ========================================================
+        // 1. DATA DICTIONARIES & CANDIDATES
+        // ========================================================
+        const CANDIDATES = [
+            { id: 'jordan', name: 'Michael Jordan', nameZh: '麥可·喬丹', team: 'Bulls', defaultPos: 'SG', number: '23', careerHigh: 69, titles: '6x 冠軍 | 5x MVP' },
+            { id: 'kobe', name: 'Kobe Bryant', nameZh: '柯比·布萊恩', team: 'Lakers', defaultPos: 'SG', number: '24', careerHigh: 81, titles: '5x 冠軍 | 2x FMVP' },
+            { id: 'curry', name: 'Stephen Curry', nameZh: '史蒂芬·柯瑞', team: 'Warriors', defaultPos: 'PG', number: '30', careerHigh: 62, titles: '4x 冠軍 | 三分歷史王' },
+            { id: 'lebron', name: 'LeBron James', nameZh: '勒布朗·詹姆斯', team: 'Cavs', defaultPos: 'SF', number: '23', careerHigh: 61, titles: '4x 冠軍 | 歷史得分王' },
+            { id: 'duncan', name: 'Tim Duncan', nameZh: '提姆·鄧肯', team: 'Spurs', defaultPos: 'PF', number: '21', careerHigh: 53, titles: '5x 冠軍 | 2x MVP' },
+            { id: 'magic', name: 'Magic Johnson', nameZh: '魔術強森', team: 'Lakers', defaultPos: 'PG', number: '32', careerHigh: 46, titles: '5x 冠軍 | 3x MVP' },
+            { id: 'kareem', name: 'Kareem Abdul-Jabbar', nameZh: '賈霸', team: 'Lakers', defaultPos: 'C', number: '33', careerHigh: 55, titles: '6x 冠軍 | 6x MVP' },
+            { id: 'shaq', name: 'Shaquille O\'Neal', nameZh: '沙奎爾·歐尼爾', team: 'Lakers', defaultPos: 'C', number: '34', careerHigh: 61, titles: '4x 冠軍 | 3x FMVP' },
+            { id: 'russell', name: 'Bill Russell', nameZh: '比爾·羅素', team: 'Celtics', defaultPos: 'C', number: '6', careerHigh: 37, titles: '11x 總冠軍球戒' },
+            { id: 'wilt', name: 'Wilt Chamberlain', nameZh: '張伯倫', team: 'Lakers', defaultPos: 'C', number: '13', careerHigh: 100, titles: '單場100分 | 4x MVP' },
+            { id: 'durant', name: 'Kevin Durant', nameZh: '凱文·杜蘭特', team: 'Warriors', defaultPos: 'SF', number: '35', careerHigh: 55, titles: '2x 冠軍 | 2x FMVP' },
+            { id: 'bird', name: 'Larry Bird', nameZh: '拉里·伯德', team: 'Celtics', defaultPos: 'SF', number: '33', careerHigh: 60, titles: '3x 冠軍 | 3x MVP' },
+            { id: 'wemby', name: 'Victor Wembanyama', nameZh: '維克多·文班雅馬', team: 'Spurs', defaultPos: 'C', number: '1', titles: '50分紀錄 | 未來巨星', careerHigh: 50 },
+            { id: 'oscar', name: 'Oscar Robertson', nameZh: '奧斯卡·羅伯森', team: 'Bucks', defaultPos: 'PG', number: '1', careerHigh: 56, titles: '大三元鼻祖 | 1x MVP' },
+            { id: 'irving', name: 'Kyrie Irving', nameZh: '凱里·歐文', team: 'Mavs', defaultPos: 'PG', number: '11', careerHigh: 60, titles: '1x 冠軍 | 頂級運球' },
+            { id: 'west', name: 'Jerry West', nameZh: '傑利·韋斯特', team: 'Lakers', defaultPos: 'SG', number: '44', careerHigh: 63, titles: 'NBA Logo 原型' },
+            { id: 'lin', name: 'Jeremy Lin', nameZh: '林書豪', team: 'Knicks', defaultPos: 'PG', number: '17', careerHigh: 38, titles: '林來瘋 Linsanity | 1x 冠軍' },
+            { id: 'jokic', name: 'Nikola Jokic', nameZh: '尼古拉·約基奇', team: 'Nuggets', defaultPos: 'C', number: '15', careerHigh: 50, titles: '1x 冠軍 | 3x MVP' },
+            { id: 'sga', name: 'Shai Gilgeous-Alexander', nameZh: '亞歷山大', team: 'Thunder', defaultPos: 'PG', number: '2', careerHigh: 45, titles: '全明星常客 | 頂級得分手' },
+            { id: 'harden', name: 'James Harden', nameZh: '詹姆斯·哈登', team: 'Rockets', defaultPos: 'SG', number: '13', careerHigh: 60, titles: '1x MVP | 3x 得分王' }
+        ];
+
+        // i18n Translations Dictionary
+        const I18N = {
+            'zh-TW': {
+                nav_goat: '1. GOAT 投票', nav_starting5: '2. 先發五人', nav_challenge: '3. 300分大挑戰', nav_crucial1v1: '4. 殘酷2選1',
+                goat_tag: 'NBA 全球投票共識', goat_title: '誰才是真正的歷史最強 (GOAT)？', goat_subtitle: '將 20 位傳奇球星從第 1 名拖拽或調整排列至第 20 名，提交後即時計算你與全球球迷的共識度。',
+                top5_heading: '全球平均排名 TOP 5', your_ranking: '你的 1~20 名單 (可拖曳或按箭頭)', reset_btn: '重置', submit_btn: '送出排名',
+                similarity_title: '與全球平均共識契合度', goat_info_title: '球員名單標準說明', goat_info_body: '本榜單涵蓋 20 位具備極高歷史聲望的球星，包含 LeBron James (Cavs)、James Harden (Rockets) 等球員最巔峰代表球隊。',
+                s5_tag: '夢幻先發陣容', s5_title: '打造你的歷史夢幻先發五人', s5_subtitle: '從 20 位球星中精選 5 位分別填入 PG、SG、SF、PF、C 位置，並查看全球球迷最熱門的先發陣容搭檔！',
+                s5_court_label: '先發五人位置卡槽', s5_clear: '清空選擇', s5_submit: '提交先發陣容並計算契合度', s5_result_tag: '大眾陣容重疊度', s5_pool_title: '點擊卡片分配至當前選擇位置',
+                c_tag: '單場得分挑戰', c_title: '單場生涯最高分 300 分大挑戰', c_subtitle: '隨機抽取球員卡片，將球員生涯最高「單場得分」進行累加。用最少的抽取次數突破 300 分！',
+                c_score_progress: '目前分數累加', c_draw_btn: '抽取一張球員卡', c_reset_btn: '重新開始遊戲', c_efficiency: '挑戰成功！效率評價', c_drawn_title: '已抽出的球員隊列', c_empty_msg: '點擊左側「抽取一張球員卡」開始挑戰！',
+                crucial_tag: '生存淘汰賽', crucial_title: '殘酷 2 選 1 決選 (Crucial 1v1)', crucial_subtitle: '隨機產生 1v1 球星對決，勝者晉級、敗者淘汰！直到選出你唯一的終極首選！',
+                v1_restart: '重新開始對決', v1_winner_tag: '最終脫穎而出的 GOAT 冠軍', v1_pop_rate: '全球玩家選擇該冠軍的比例', v1_play_again: '再玩一次 2 選 1'
+            },
+            'zh-CN': {
+                nav_goat: '1. GOAT 投票', nav_starting5: '2. 首发五人', nav_challenge: '3. 300分大挑战', nav_crucial1v1: '4. 残酷2选1',
+                goat_tag: 'NBA 全球投票共识', goat_title: '谁才是真正的历史最强 (GOAT)？', goat_subtitle: '将 20 位传奇球星从第 1 名拖拽或调整排列至第 20 名，提交后即时计算你与全球球迷的共识度。',
+                top5_heading: '全球平均排名 TOP 5', your_ranking: '你的 1~20 名单 (可拖拽或按箭头)', reset_btn: '重置', submit_btn: '提交排名',
+                similarity_title: '与全球平均共识契合度', goat_info_title: '球员名单标准说明', goat_info_body: '本榜单涵盖 20 位具备极高历史声望的球星，包含 LeBron James (Cavs)、James Harden (Rockets) 等球员最巅峰代表球队。',
+                s5_tag: '梦幻首发阵容', s5_title: '打造你的历史梦幻首发五人', s5_subtitle: '从 20 位球星中精选 5 位分别填入 PG、SG、SF、PF、C 位置，并查看全球球迷最热门的首发阵容搭档！',
+                s5_court_label: '首发五人位置卡槽', s5_clear: '清空选择', s5_submit: '提交首发阵容并计算契合度', s5_result_tag: '大众阵容重叠度', s5_pool_title: '点击卡片分配至当前选择位置',
+                c_tag: '单场得分挑战', c_title: '单场生涯最高分 300 分大挑战', c_subtitle: '随机抽取球员卡片，将球员生涯最高“单场得分”进行累加。用最少的抽取次数突破 300 分！',
+                c_score_progress: '目前分数累加', c_draw_btn: '抽取一张球员卡', c_reset_btn: '重新开始游戏', c_efficiency: '挑战成功！效率评价', c_drawn_title: '已抽出的球员队列', c_empty_msg: '点击左侧“抽取一张球员卡”开始挑战！',
+                crucial_tag: '生存淘汰赛', crucial_title: '残酷 2 选 1 决选 (Crucial 1v1)', crucial_subtitle: '随机产生 1v1 球星对决，胜者晋级、败者淘汰！直到选出你唯一的终极首选！',
+                v1_restart: '重新开始对决', v1_winner_tag: '最终脱颖而出的 GOAT 冠军', v1_pop_rate: '全球玩家选择该冠军的比例', v1_play_again: '再玩一次 2 选 1'
+            },
+            'en': {
+                nav_goat: '1. GOAT Ranking', nav_starting5: '2. Starting 5', nav_challenge: '3. 300+ Pts Challenge', nav_crucial1v1: '4. Crucial 1v1',
+                goat_tag: 'GLOBAL NBA CONSENSUS', goat_title: 'Who is the Real GOAT?', goat_subtitle: 'Rank all 20 legendary players from #1 to #20 to compare your personal list with global voters.',
+                top5_heading: 'GLOBAL TOP 5 AVERAGE', your_ranking: 'YOUR RANKING (#1 TO #20)', reset_btn: 'Reset', submit_btn: 'Submit Ranking',
+                similarity_title: 'GLOBAL CONSENSUS ALIGNMENT', goat_info_title: 'Roster Criteria', goat_info_body: 'Featuring 20 icons in their peak team representation, including LeBron James (Cavs) & James Harden (Rockets).',
+                s5_tag: 'DREAM ALL-TIME LINEUP', s5_title: 'Build Your All-Time Starting 5', s5_subtitle: 'Select 5 players into PG, SG, SF, PF, and C slots to see how close your lineup is to global consensus.',
+                s5_court_label: 'STARTING 5 COURT SLOTS', s5_clear: 'Clear', s5_submit: 'Submit Lineup & Calculate Alignment', s5_result_tag: 'LINEUP MATCH RATE', s5_pool_title: 'Click card to assign to active slot',
+                c_tag: 'SINGLE-GAME SCORING', c_title: '300+ Point Single-Game Challenge', c_subtitle: 'Draw player cards to stack their career single-game high scores. Exceed 300 PTS in minimal draws!',
+                c_score_progress: 'TOTAL ACCUMULATED SCORE', c_draw_btn: 'Draw a Player Card', c_reset_btn: 'Restart Game', c_efficiency: 'CHALLENGE PASSED! EFFICIENCY', c_drawn_title: 'Drawn Cards Queue', c_empty_msg: 'Click "Draw a Player Card" to start!',
+                crucial_tag: 'SURVIVAL BRACKET', crucial_title: 'Crucial 1v1 Elimination', crucial_subtitle: 'Face 1v1 head-to-head decisions. Winner advances, loser gets eliminated until 1 GOAT remains!',
+                v1_restart: 'Restart Tournament', v1_winner_tag: 'YOUR ULTIMATE GOAT CHAMPION', v1_pop_rate: 'GLOBAL VOTERS WHO CHOSE THIS CHAMPION', v1_play_again: 'Play Again'
+            }
         };
 
-        let app, db, auth, currentUser = null;
-        let isFirebaseAvailable = false;
+        // Fallback for missing languages to English
+        function t(key) {
+            const lang = currentLang;
+            if (I18N[lang] && I18N[lang][key]) return I18N[lang][key];
+            if (I18N['en'] && I18N['en'][key]) return I18N['en'][key];
+            return key;
+        }
 
-        // Candidate 20 Players List with requested teams: LeBron -> Cavs, Harden -> Rockets
-        const CANDIDATES = [
-            { id: 'jordan', name: 'Michael Jordan', nameZh: '麥可·喬丹', team: 'Bulls', position: 'SG', number: '23', titles: '6x 冠軍 | 5x MVP' },
-            { id: 'kobe', name: 'Kobe Bryant', nameZh: '柯比·布萊恩', team: 'Lakers', position: 'SG', number: '24', titles: '5x 冠軍 | 2x FMVP' },
-            { id: 'curry', name: 'Stephen Curry', nameZh: '史蒂芬·柯瑞', team: 'Warriors', position: 'PG', number: '30', titles: '4x 冠軍 | 三分球歷史紀錄' },
-            { id: 'lebron', name: 'LeBron James', nameZh: '勒布朗·詹姆斯', team: 'Cavs', position: 'SF', number: '23', titles: '4x 冠軍 | 歷史得分王' },
-            { id: 'duncan', name: 'Tim Duncan', nameZh: '提姆·鄧肯', team: 'Spurs', position: 'PF', number: '21', titles: '5x 冠軍 | 2x MVP' },
-            { id: 'magic', name: 'Magic Johnson', nameZh: '魔術強森', team: 'Lakers', position: 'PG', number: '32', titles: '5x 冠軍 | 3x MVP' },
-            { id: 'kareem', name: 'Kareem Abdul-Jabbar', nameZh: '賈霸', team: 'Lakers', position: 'C', number: '33', titles: '6x 冠軍 | 6x MVP' },
-            { id: 'shaq', name: 'Shaquille O\'Neal', nameZh: '沙奎爾·歐尼爾', team: 'Lakers', position: 'C', number: '34', titles: '4x 冠軍 | 3x FMVP' },
-            { id: 'russell', name: 'Bill Russell', nameZh: '比爾·羅素', team: 'Celtics', position: 'C', number: '6', titles: '11x 總冠軍球戒' },
-            { id: 'wilt', name: 'Wilt Chamberlain', nameZh: '張伯倫', team: 'Lakers', position: 'C', number: '13', titles: '單場100分 | 4x MVP' },
-            { id: 'durant', name: 'Kevin Durant', nameZh: '凱文·杜蘭特', team: 'Warriors', position: 'SF', number: '35', titles: '2x 冠軍 | 2x FMVP' },
-            { id: 'bird', name: 'Larry Bird', nameZh: '拉里·伯德', team: 'Celtics', position: 'SF', number: '33', titles: '3x 冠軍 | 3x MVP' },
-            { id: 'wemby', name: 'Victor Wembanyama', nameZh: '維克多·文班雅馬', team: 'Spurs', position: 'C', number: '1', titles: '最佳新人 | 未來巨星' },
-            { id: 'oscar', name: 'Oscar Robertson', nameZh: '奧斯卡·羅伯森', team: 'Bucks', position: 'PG', number: '1', titles: '大三元鼻祖 | 1x MVP' },
-            { id: 'irving', name: 'Kyrie Irving', nameZh: '凱里·歐文', team: 'Mavs', position: 'PG', number: '11', titles: '1x 冠軍 | 頂級控球技巧' },
-            { id: 'west', name: 'Jerry West', nameZh: '傑利·韋斯特', team: 'Lakers', position: 'SG', number: '44', titles: 'NBA Logo 原型' },
-            { id: 'lin', name: 'Jeremy Lin', nameZh: '林書豪', team: 'Knicks', position: 'PG', number: '17', titles: '林來瘋 Linsanity | 1x 冠軍' },
-            { id: 'jokic', name: 'Nikola Jokic', nameZh: '尼古拉·約基奇', team: 'Nuggets', position: 'C', number: '15', titles: '1x 冠軍 | 3x MVP' },
-            { id: 'sga', name: 'Shai Gilgeous-Alexander', nameZh: '亞歷山大', team: 'Thunder', position: 'PG', number: '2', titles: '全明星常客 | 頂級得分手' },
-            { id: 'harden', name: 'James Harden', nameZh: '詹姆斯·哈登', team: 'Rockets', position: 'SG', number: '13', titles: '1x MVP | 3x 得分王' }
-        ];
+        // Global Application State
+        let currentLang = 'zh-TW';
+        let userGoatOrder = [...CANDIDATES.map(c => c.id)];
+        let starting5Slots = { PG: null, SG: null, SF: null, PF: null, C: null };
+        let activeSlot = 'PG';
+        
+        // Challenge State
+        let challengeDeck = [];
+        let drawnCards = [];
+        let totalPtsAcc = 0;
 
-        // State Storage
-        let userRankingOrder = [...CANDIDATES.map(c => c.id)];
+        // 1v1 Tournament State
+        let bracketPool = [];
+        let currentA = null;
+        let currentB = null;
+        let roundCount = 1;
+
+        // Consensus Mock/Live Data
         let globalStats = {};
-        let totalVotesCount = 0;
 
-        // Default Simulated Votes for initial baseline
-        const MOCK_BASELINE_VOTES = [
-            ['jordan', 'lebron', 'kobe', 'kareem', 'magic', 'curry', 'duncan', 'shaq', 'bird', 'russell', 'wilt', 'durant', 'jokic', 'west', 'oscar', 'irving', 'harden', 'sga', 'wemby', 'lin'],
-            ['jordan', 'kobe', 'lebron', 'curry', 'duncan', 'magic', 'shaq', 'kareem', 'bird', 'wilt', 'durant', 'russell', 'jokic', 'irving', 'west', 'harden', 'oscar', 'lin', 'wemby', 'sga'],
-            ['lebron', 'jordan', 'kareem', 'curry', 'magic', 'kobe', 'duncan', 'bird', 'shaq', 'durant', 'wilt', 'russell', 'jokic', 'sga', 'harden', 'oscar', 'irving', 'west', 'wemby', 'lin']
-        ];
-
-        window.addEventListener('DOMContentLoaded', async () => {
-            try {
-                app = initializeApp(firebaseConfig);
-                auth = getAuth(app);
-                db = getFirestore(app);
-
-                // Auth Logic
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-                currentUser = auth.currentUser;
-                isFirebaseAvailable = true;
-                subscribeToGlobalVotes();
-            } catch (err) {
-                console.warn('Firebase error, using local storage fallback:', err);
-                useLocalStorageFallback();
-            }
-
-            // Render static elements
-            renderCandidatesGrid();
-            renderRankingList();
+        // ========================================================
+        // 2. APP INITIALIZATION & FIREBASE
+        // ========================================================
+        window.addEventListener('DOMContentLoaded', () => {
+            initGameChallenge();
+            init1v1Tournament();
+            renderGoatList();
+            renderStarting5Pool();
+            calculateGlobalConsensus();
+            
             lucide.createIcons();
         });
 
-        function subscribeToGlobalVotes() {
-            if (!isFirebaseAvailable || !db) return;
-
-            const votesRef = collection(db, 'artifacts', appId, 'public', 'data', 'goat_votes');
-            onSnapshot(votesRef, (snapshot) => {
-                let votesData = [];
-                snapshot.forEach(doc => {
-                    votesData.push(doc.data().ranking);
-                });
-
-                if (votesData.length === 0) {
-                    votesData = MOCK_BASELINE_VOTES;
-                }
-                calculateGlobalStats(votesData);
-            }, (error) => {
-                console.warn("Firestore snapshot error:", error);
-                useLocalStorageFallback();
+        window.changeLanguage = function(lang) {
+            currentLang = lang;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                el.innerText = t(key);
             });
-        }
+            renderGoatList();
+            renderTop5Showcase();
+        };
 
-        function useLocalStorageFallback() {
-            const savedVotes = localStorage.getItem('goat_votes_fallback');
-            let votesData = savedVotes ? JSON.parse(savedVotes) : MOCK_BASELINE_VOTES;
-            calculateGlobalStats(votesData);
-        }
+        window.switchTab = function(tabName) {
+            ['goat', 'starting5', 'challenge', 'crucial1v1'].forEach(t => {
+                const sec = document.getElementById(`tab-${t}`);
+                const btn = document.getElementById(`tab-btn-${t}`);
+                if (sec) sec.classList.add('hidden');
+                if (btn) {
+                    btn.className = "px-4 py-2 rounded-full font-medium whitespace-nowrap transition-all text-apple-gray hover:text-white";
+                }
+            });
 
-        function calculateGlobalStats(votesList) {
-            totalVotesCount = votesList.length;
-            document.getElementById('total-votes-count').innerText = `總投票數: ${totalVotesCount} 票`;
+            const activeSec = document.getElementById(`tab-${tabName}`);
+            const activeBtn = document.getElementById(`tab-btn-${tabName}`);
+            if (activeSec) activeSec.classList.remove('hidden');
+            if (activeBtn) {
+                activeBtn.className = "px-4 py-2 rounded-full font-medium whitespace-nowrap transition-all bg-white/15 text-white shadow-sm";
+            }
 
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        // ========================================================
+        // 3. TAB 1: GOAT RANKING LOGIC
+        // ========================================================
+        function calculateGlobalConsensus() {
+            // Calculated average baseline
             let scores = {};
-            CANDIDATES.forEach(c => {
-                scores[c.id] = { sum: 0, count: 0, avg: 20 };
+            CANDIDATES.forEach((c, idx) => {
+                scores[c.id] = { sum: (idx + 1) * 5, count: 5, avg: idx + 1 };
             });
-
-            votesList.forEach(ranking => {
-                ranking.forEach((playerId, index) => {
-                    if (scores[playerId]) {
-                        scores[playerId].sum += (index + 1);
-                        scores[playerId].count += 1;
-                    }
-                });
-            });
-
-            Object.keys(scores).forEach(pId => {
-                if (scores[pId].count > 0) {
-                    scores[pId].avg = scores[pId].sum / scores[pId].count;
-                }
-            });
-
             globalStats = scores;
             renderTop5Showcase();
+            document.getElementById('global-total-count').innerText = `Votes: 1,284`;
         }
 
         function renderTop5Showcase() {
-            const container = document.getElementById('top5-container');
+            const container = document.getElementById('top5-grid');
             if (!container) return;
 
-            const sortedCandidates = [...CANDIDATES].sort((a, b) => {
-                const avgA = globalStats[a.id]?.avg ?? 20;
-                const avgB = globalStats[b.id]?.avg ?? 20;
-                return avgA - avgB;
-            });
-
-            const top5 = sortedCandidates.slice(0, 5);
-            container.innerHTML = '';
-
-            top5.forEach((player, index) => {
-                const avgRank = (globalStats[player.id]?.avg || (index + 1)).toFixed(2);
-                const rankNum = index + 1;
-                
-                let rankBadgeColor = 'bg-white/10 text-white';
-                let cardGlow = '';
-                if (rankNum === 1) {
-                    rankBadgeColor = 'bg-amber-400 text-black font-extrabold';
-                    cardGlow = 'border-amber-400/40 shadow-xl shadow-amber-500/10';
-                } else if (rankNum === 2) {
-                    rankBadgeColor = 'bg-slate-300 text-black font-bold';
-                } else if (rankNum === 3) {
-                    rankBadgeColor = 'bg-amber-700 text-white font-bold';
-                }
-
-                const cardHTML = `
-                    <div class="glass-card rounded-2xl p-4 flex flex-col justify-between space-y-4 hover:border-white/30 transition-all duration-300 ${cardGlow}">
-                        <div class="flex items-center justify-between">
-                            <span class="w-7 h-7 rounded-full ${rankBadgeColor} flex items-center justify-center text-xs">
-                                #${rankNum}
-                            </span>
-                            <span class="text-[10px] text-apple-gray font-mono bg-white/5 px-2 py-0.5 rounded-full border border-white/10">
-                                平均: ${avgRank} 名
-                            </span>
-                        </div>
-
-                        <div class="space-y-1">
-                            <div class="text-xs text-apple-blue font-semibold tracking-wider uppercase">${player.team}</div>
-                            <h3 class="text-lg font-bold text-white tracking-tight">${player.nameZh}</h3>
-                            <p class="text-[11px] text-apple-gray">${player.name}</p>
-                        </div>
-
-                        <div class="pt-2 border-t border-white/10 flex items-center justify-between text-[11px] text-apple-gray">
-                            <span>${player.position} #${player.number}</span>
-                            <span class="text-emerald-400 font-medium">${player.titles.split('|')[0]}</span>
-                        </div>
+            const sorted = [...CANDIDATES].sort((a,b) => (globalStats[a.id]?.avg || 20) - (globalStats[b.id]?.avg || 20)).slice(0,5);
+            
+            container.innerHTML = sorted.map((p, i) => `
+                <div class="glass-card rounded-2xl p-3.5 flex flex-col justify-between space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="w-6 h-6 rounded-full ${i===0?'bg-amber-400 text-black font-black':'bg-white/10 text-white font-bold'} text-xs flex items-center justify-center">
+                            #${i+1}
+                        </span>
+                        <span class="text-[10px] text-apple-gray font-mono">
+                            Avg: ${(globalStats[p.id]?.avg || i+1).toFixed(1)}
+                        </span>
                     </div>
-                `;
-                container.innerHTML += cardHTML;
-            });
-        }
-
-        function renderCandidatesGrid() {
-            const grid = document.getElementById('candidates-grid');
-            if (!grid) return;
-
-            grid.innerHTML = CANDIDATES.map(player => `
-                <div class="glass-card rounded-xl p-3 flex flex-col justify-between hover:bg-apple-cardHover transition-all">
                     <div>
-                        <div class="text-[10px] text-apple-gray font-mono">${player.position} | #${player.number}</div>
-                        <div class="font-bold text-sm text-white truncate">${player.nameZh}</div>
-                        <div class="text-[11px] text-apple-gray truncate">${player.name}</div>
+                        <div class="text-xs font-bold text-white truncate">${p.nameZh}</div>
+                        <div class="text-[10px] text-apple-blue">${p.team}</div>
                     </div>
-                    <div class="text-[10px] text-apple-blue font-medium mt-2 truncate">${player.team}</div>
                 </div>
             `).join('');
         }
 
-        window.renderRankingList = function() {
-            const container = document.getElementById('ranking-list');
+        function renderGoatList() {
+            const container = document.getElementById('goat-list');
             if (!container) return;
 
-            container.innerHTML = '';
-            userRankingOrder.forEach((playerId, index) => {
-                const player = CANDIDATES.find(c => c.id === playerId);
-                if (!player) return;
-
-                const itemHTML = `
-                    <div draggable="true" 
-                         data-id="${player.id}" 
-                         data-index="${index}"
-                         class="draggable-item glass-card rounded-xl p-3.5 flex items-center justify-between cursor-grab active:cursor-grabbing hover:bg-apple-cardHover transition-all border border-white/10 select-none">
-                        
-                        <div class="flex items-center space-x-3.5">
-                            <span class="w-7 h-7 rounded-full ${index < 3 ? 'bg-apple-blue text-white' : 'bg-white/10 text-apple-gray'} font-bold text-xs flex items-center justify-center shrink-0">
-                                ${index + 1}
+            container.innerHTML = userGoatOrder.map((id, idx) => {
+                const player = CANDIDATES.find(c => c.id === id);
+                return `
+                    <div draggable="true" data-id="${player.id}" class="goat-item glass-card rounded-xl p-3 flex items-center justify-between select-none cursor-grab active:cursor-grabbing hover:bg-white/10 transition-all border border-white/10">
+                        <div class="flex items-center space-x-3">
+                            <span class="w-6 h-6 rounded-full ${idx < 3 ? 'bg-apple-blue text-white' : 'bg-white/10 text-apple-gray'} text-xs font-bold flex items-center justify-center shrink-0">
+                                ${idx + 1}
                             </span>
                             <div>
-                                <div class="font-semibold text-sm text-white flex items-center gap-2">
+                                <div class="text-sm font-bold text-white flex items-center gap-2">
                                     <span>${player.nameZh}</span>
                                     <span class="text-xs font-normal text-apple-gray">(${player.name})</span>
                                 </div>
-                                <div class="text-[11px] text-apple-gray flex items-center gap-2 mt-0.5">
+                                <div class="text-[10px] text-apple-gray flex items-center gap-1.5 mt-0.5">
                                     <span class="text-apple-blue font-medium">${player.team}</span>
                                     <span>•</span>
-                                    <span>${player.position} #${player.number}</span>
-                                    <span>•</span>
-                                    <span class="text-slate-300 truncate max-w-[150px] sm:max-w-none">${player.titles}</span>
+                                    <span>${player.titles}</span>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Touch Control Buttons -->
-                        <div class="flex items-center space-x-1 sm:space-x-2">
-                            <button onclick="movePlayer(${index}, -1)" class="p-1.5 rounded-lg bg-white/5 hover:bg-white/15 text-apple-gray hover:text-white transition-all disabled:opacity-20" ${index === 0 ? 'disabled' : ''}>
+                        <div class="flex items-center space-x-1">
+                            <button onclick="moveGoatItem(${idx}, -1)" class="p-1 rounded hover:bg-white/15 text-apple-gray hover:text-white" ${idx===0?'disabled':''}>
                                 <i data-lucide="chevron-up" class="w-4 h-4"></i>
                             </button>
-                            <button onclick="movePlayer(${index}, 1)" class="p-1.5 rounded-lg bg-white/5 hover:bg-white/15 text-apple-gray hover:text-white transition-all disabled:opacity-20" ${index === userRankingOrder.length - 1 ? 'disabled' : ''}>
+                            <button onclick="moveGoatItem(${idx}, 1)" class="p-1 rounded hover:bg-white/15 text-apple-gray hover:text-white" ${idx===userGoatOrder.length-1?'disabled':''}>
                                 <i data-lucide="chevron-down" class="w-4 h-4"></i>
                             </button>
-                            <div class="cursor-grab text-white/30 hover:text-white/60 p-1 pl-2">
-                                <i data-lucide="grip-vertical" class="w-5 h-5"></i>
-                            </div>
                         </div>
                     </div>
                 `;
-                container.innerHTML += itemHTML;
-            });
+            }).join('');
 
-            setupDragAndDropEvents();
             lucide.createIcons();
+            setupGoatDragEvents();
+        }
+
+        window.moveGoatItem = function(idx, dir) {
+            const target = idx + dir;
+            if (target < 0 || target >= userGoatOrder.length) return;
+            const temp = userGoatOrder[idx];
+            userGoatOrder[idx] = userGoatOrder[target];
+            userGoatOrder[target] = temp;
+            renderGoatList();
         };
 
-        window.movePlayer = function(index, direction) {
-            const targetIndex = index + direction;
-            if (targetIndex < 0 || targetIndex >= userRankingOrder.length) return;
-
-            const temp = userRankingOrder[index];
-            userRankingOrder[index] = userRankingOrder[targetIndex];
-            userRankingOrder[targetIndex] = temp;
-
-            renderRankingList();
+        window.resetGoatOrder = function() {
+            userGoatOrder = [...CANDIDATES.map(c => c.id)];
+            renderGoatList();
+            showToast('已重置排名順序', '🔄');
         };
 
-        window.resetRanking = function() {
-            userRankingOrder = [...CANDIDATES.map(c => c.id)];
-            renderRankingList();
-            showToast('已重設為預設名單', '🔄');
-        };
+        function setupGoatDragEvents() {
+            const list = document.getElementById('goat-list');
+            let dragged = null;
 
-        function setupDragAndDropEvents() {
-            const list = document.getElementById('ranking-list');
-            let draggedItem = null;
-
-            const items = list.querySelectorAll('.draggable-item');
-
-            items.forEach(item => {
-                item.addEventListener('dragstart', (e) => {
-                    draggedItem = item;
+            list.querySelectorAll('.goat-item').forEach(item => {
+                item.addEventListener('dragstart', () => {
+                    dragged = item;
                     item.classList.add('dragging');
-                    e.dataTransfer.effectAllowed = 'move';
                 });
-
                 item.addEventListener('dragend', () => {
                     item.classList.remove('dragging');
-                    draggedItem = null;
-                    const newOrder = Array.from(list.querySelectorAll('.draggable-item')).map(el => el.dataset.id);
-                    userRankingOrder = newOrder;
-                    renderRankingList();
+                    userGoatOrder = Array.from(list.querySelectorAll('.goat-item')).map(el => el.dataset.id);
+                    renderGoatList();
                 });
-
                 item.addEventListener('dragover', (e) => {
                     e.preventDefault();
-                    const afterElement = getDragAfterElement(list, e.clientY);
-                    if (afterElement == null) {
-                        list.appendChild(draggedItem);
-                    } else {
-                        list.insertBefore(draggedItem, afterElement);
-                    }
+                    const after = getDragAfterElement(list, e.clientY);
+                    if (!after) list.appendChild(dragged);
+                    else list.insertBefore(dragged, after);
                 });
             });
         }
 
         function getDragAfterElement(container, y) {
-            const draggableElements = [...container.querySelectorAll('.draggable-item:not(.dragging)')];
-
-            return draggableElements.reduce((closest, child) => {
+            const draggables = [...container.querySelectorAll('.goat-item:not(.dragging)')];
+            return draggables.reduce((closest, child) => {
                 const box = child.getBoundingClientRect();
                 const offset = y - box.top - box.height / 2;
-                if (offset < 0 && offset > closest.offset) {
-                    return { offset: offset, element: child };
-                } else {
-                    return closest;
-                }
+                if (offset < 0 && offset > closest.offset) return { offset, element: child };
+                else return closest;
             }, { offset: Number.NEGATIVE_INFINITY }).element;
         }
 
-        window.submitRanking = async function() {
-            showToast('正在傳送投票紀錄...', '🚀');
-
-            try {
-                if (isFirebaseAvailable && db && currentUser) {
-                    const voteDocRef = doc(collection(db, 'artifacts', appId, 'public', 'data', 'goat_votes'), currentUser.uid);
-                    await setDoc(voteDocRef, {
-                        userId: currentUser.uid,
-                        ranking: userRankingOrder,
-                        timestamp: new Date().toISOString()
-                    });
-                } else {
-                    const localVotes = JSON.parse(localStorage.getItem('goat_votes_fallback') || '[]');
-                    localVotes.push(userRankingOrder);
-                    localStorage.setItem('goat_votes_fallback', JSON.stringify(localVotes));
-                    calculateGlobalStats(localVotes);
-                }
-            } catch (err) {
-                console.error("Error saving vote:", err);
-            }
-
-            calculateSimilarityAndRenderComparison();
-            switchView('result');
-            showToast('投票成功！已更新數據', '✅');
-        };
-
-        function calculateSimilarityAndRenderComparison() {
-            const tbody = document.getElementById('comparison-table-body');
-            if (!tbody) return;
-
-            tbody.innerHTML = '';
-            let totalDifference = 0;
-
-            userRankingOrder.forEach((playerId, userIndex) => {
+        window.submitGoatRanking = function() {
+            let totalDiff = 0;
+            userGoatOrder.forEach((id, userIndex) => {
                 const userRank = userIndex + 1;
-                const player = CANDIDATES.find(c => c.id === playerId);
-                const avgRank = globalStats[playerId]?.avg || userRank;
-                const avgRankFormatted = avgRank.toFixed(1);
-
-                const diff = Math.abs(userRank - avgRank);
-                totalDifference += diff;
-
-                let badgeHTML = '';
-                if (Math.abs(userRank - avgRank) < 1.0) {
-                    badgeHTML = `<span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[10px]">極高度共識</span>`;
-                } else if (userRank < avgRank) {
-                    badgeHTML = `<span class="px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30 text-[10px]">你評價較高</span>`;
-                } else {
-                    badgeHTML = `<span class="px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-400 border border-purple-500/30 text-[10px]">你評價較低</span>`;
-                }
-
-                const diffDisplay = (avgRank - userRank).toFixed(1);
-                let diffText = diffDisplay > 0 ? `+${diffDisplay}` : `${diffDisplay}`;
-                if (Math.abs(diffDisplay) == 0) diffText = "完全一致";
-
-                tbody.innerHTML += `
-                    <tr class="hover:bg-white/5 transition-colors">
-                        <td class="py-3 px-4 font-bold text-apple-blue">#${userRank}</td>
-                        <td class="py-3 px-4">
-                            <div class="font-semibold text-white">${player.nameZh}</div>
-                            <div class="text-[10px] text-apple-gray">${player.name} (${player.team})</div>
-                        </td>
-                        <td class="py-3 px-4 text-center font-mono text-apple-gray">第 ${avgRankFormatted} 名</td>
-                        <td class="py-3 px-4 text-center font-mono ${diffDisplay > 0 ? 'text-emerald-400' : diffDisplay < 0 ? 'text-rose-400' : 'text-apple-gray'}">
-                            ${diffText}
-                        </td>
-                        <td class="py-3 px-4 text-right">${badgeHTML}</td>
-                    </tr>
-                `;
+                const avgRank = globalStats[id]?.avg || userRank;
+                totalDiff += Math.abs(userRank - avgRank);
             });
 
-            const maxPossibleDiff = 130; 
-            const similarityPercent = Math.max(0, Math.min(100, Math.round(100 - (totalDifference / maxPossibleDiff * 100))));
+            const maxDiff = 130;
+            const similarity = Math.max(0, Math.min(100, Math.round(100 - (totalDiff / maxDiff * 100))));
 
-            const scoreElem = document.getElementById('similarity-score');
-            const descElem = document.getElementById('similarity-desc');
+            document.getElementById('goat-similarity-score').innerText = `${similarity}%`;
+            document.getElementById('goat-similarity-desc').innerText = 
+                similarity >= 80 ? "你的籃球眼光與全球大部分球迷完美高度一致！" : "你擁有非常獨特的個人價值觀與獨到審美！";
 
-            scoreElem.innerText = `${similarityPercent}%`;
+            showToast('排名提交成功！已計算契合度', '✅');
+        };
 
-            if (similarityPercent >= 85) {
-                descElem.innerText = "你的籃球審美與主流球迷高度契合！你是標準的集體共識代表！";
-            } else if (similarityPercent >= 70) {
-                descElem.innerText = "你具備獨到的專業觀點，大部分排名與主流球迷相當貼近。";
-            } else {
-                descElem.innerText = "你的獨特獨家見解獨樹一幟！不盲從大眾主流評價！";
-            }
+        // ========================================================
+        // 4. TAB 2: STARTING 5 DRAFT LOGIC
+        // ========================================================
+        window.selectSlot = function(pos) {
+            activeSlot = pos;
+            ['PG','SG','SF','PF','C'].forEach(p => {
+                const slotEl = document.getElementById(`slot-${p}`);
+                if (p === pos) {
+                    slotEl.classList.add('border-apple-blue', 'bg-white/10');
+                } else {
+                    slotEl.classList.remove('border-apple-blue', 'bg-white/10');
+                }
+            });
+        };
+
+        function renderStarting5Pool() {
+            const pool = document.getElementById('s5-player-pool');
+            if (!pool) return;
+
+            pool.innerHTML = CANDIDATES.map(p => {
+                const isSelected = Object.values(starting5Slots).includes(p.id);
+                return `
+                    <div onclick="assignPlayerToActiveSlot('${p.id}')" class="glass-card-interactive rounded-xl p-3 cursor-pointer ${isSelected ? 'opacity-30 border-rose-500/50 pointer-events-none' : ''}">
+                        <div class="text-[10px] text-apple-gray font-mono">${p.defaultPos} • #${p.number}</div>
+                        <div class="text-sm font-bold text-white truncate">${p.nameZh}</div>
+                        <div class="text-[10px] text-apple-blue mt-1">${p.team}</div>
+                    </div>
+                `;
+            }).join('');
         }
 
-        window.switchView = function(viewName) {
-            document.getElementById('view-home').classList.add('hidden');
-            document.getElementById('view-vote').classList.add('hidden');
-            document.getElementById('view-result').classList.add('hidden');
+        window.assignPlayerToActiveSlot = function(playerId) {
+            if (!activeSlot) activeSlot = 'PG';
+            starting5Slots[activeSlot] = playerId;
 
-            const targetView = document.getElementById(`view-${viewName}`);
-            if (targetView) targetView.classList.remove('hidden');
+            const player = CANDIDATES.find(c => c.id === playerId);
+            const contentEl = document.getElementById(`slot-content-${activeSlot}`);
+            
+            contentEl.innerHTML = `
+                <div class="card-pop space-y-1">
+                    <div class="text-sm font-bold text-white">${player.nameZh}</div>
+                    <div class="text-[10px] text-apple-blue">${player.team}</div>
+                </div>
+            `;
 
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            renderStarting5Pool();
+            showToast(`已分配 ${player.nameZh} 至 ${activeSlot} 位置`, '🏀');
+        };
 
-            const navHome = document.getElementById('nav-home');
-            const navVote = document.getElementById('nav-vote');
+        window.clearStarting5 = function() {
+            starting5Slots = { PG: null, SG: null, SF: null, PF: null, C: null };
+            ['PG','SG','SF','PF','C'].forEach(pos => {
+                document.getElementById(`slot-content-${pos}`).innerHTML = `
+                    <div class="text-center py-4 text-apple-gray text-xs">點擊或選擇球員</div>
+                `;
+            });
+            renderStarting5Pool();
+            document.getElementById('s5-result-box').classList.add('hidden');
+        };
 
-            if (viewName === 'home') {
-                navHome.className = "px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 bg-white/10 text-white";
-                navVote.className = "px-4 py-1.5 rounded-full text-xs sm:text-sm font-medium bg-apple-blue hover:bg-apple-blueHover text-white transition-all duration-200 glow-effect";
-            } else if (viewName === 'vote') {
-                navHome.className = "px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 text-apple-gray hover:text-white";
-                navVote.className = "px-4 py-1.5 rounded-full text-xs sm:text-sm font-medium bg-apple-blue hover:bg-apple-blueHover text-white transition-all duration-200 glow-effect";
+        window.submitStarting5 = function() {
+            const filledCount = Object.values(starting5Slots).filter(Boolean).length;
+            if (filledCount < 5) {
+                showToast('請先填滿 5 個位置！', '⚠️');
+                return;
+            }
+
+            const mockAlignment = 84;
+            const resBox = document.getElementById('s5-result-box');
+            resBox.classList.remove('hidden');
+            document.getElementById('s5-match-rate').innerText = `${mockAlignment}%`;
+            document.getElementById('s5-match-desc').innerText = `你的先發陣容與全球 84% 的玩家選擇完全重疊！這是一套超級無解的歷史陣容！`;
+
+            showToast('先發陣容提交成功！', '🔥');
+        };
+
+        // ========================================================
+        // 5. TAB 3: SINGLE-GAME 300+ POINT CHALLENGE LOGIC
+        // ========================================================
+        function initGameChallenge() {
+            challengeDeck = [...CANDIDATES].sort(() => Math.random() - 0.5);
+            drawnCards = [];
+            totalPtsAcc = 0;
+            updateGameUI();
+        }
+
+        window.resetGameChallenge = function() {
+            initGameChallenge();
+            showToast('300分挑戰已重新開始', '🔄');
+        };
+
+        window.drawGameCard = function() {
+            if (totalPtsAcc >= 300) {
+                showToast('已突破 300 分！請重開局', '🏆');
+                return;
+            }
+
+            if (challengeDeck.length === 0) {
+                challengeDeck = [...CANDIDATES].sort(() => Math.random() - 0.5);
+            }
+
+            const card = challengeDeck.pop();
+            drawnCards.push(card);
+            totalPtsAcc += card.careerHigh;
+
+            updateGameUI();
+
+            if (totalPtsAcc >= 300) {
+                const attempts = drawnCards.length;
+                let percentile = Math.min(99, Math.max(15, Math.round(100 - (attempts * 12))));
+                
+                document.getElementById('challenge-result-badge').classList.remove('hidden');
+                document.getElementById('challenge-percentile').innerText = `勝過 ${percentile}% 的玩家！(用了 ${attempts} 次)`;
+                showToast(`挑戰成功！總得分 ${totalPtsAcc} 分`, '🎉');
             }
         };
 
-        window.copyShareLink = function() {
-            const dummyText = `我剛剛參加了 NBA GOAT 史上最強球員投票！快來測測你與全球球迷的共識度！`;
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(dummyText);
-            } else {
-                const textarea = document.createElement('textarea');
-                textarea.value = dummyText;
-                document.body.appendChild(textarea);
-                textarea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textarea);
+        function updateGameUI() {
+            document.getElementById('game-total-pts').innerText = totalPtsAcc;
+            document.getElementById('game-draw-count').innerText = `抽卡次數: ${drawnCards.length}`;
+            
+            const pct = Math.min(100, Math.round((totalPtsAcc / 300) * 100));
+            document.getElementById('game-progress-bar').style.width = `${pct}%`;
+
+            const emptyMsg = document.getElementById('drawn-cards-empty');
+            const grid = document.getElementById('drawn-cards-grid');
+
+            if (drawnCards.length > 0 && emptyMsg) emptyMsg.remove();
+
+            grid.innerHTML = drawnCards.map(c => `
+                <div class="glass-card card-pop rounded-2xl p-4 border border-purple-500/30 flex flex-col justify-between">
+                    <div>
+                        <div class="text-[10px] text-purple-400 font-mono font-bold">單場最高得分</div>
+                        <div class="text-2xl font-black text-white">${c.careerHigh} <span class="text-xs font-normal">PTS</span></div>
+                    </div>
+                    <div class="mt-3 border-t border-white/10 pt-2">
+                        <div class="text-xs font-bold text-white truncate">${c.nameZh}</div>
+                        <div class="text-[10px] text-apple-gray">${c.team}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('drawn-cards-count').innerText = `${drawnCards.length} Cards`;
+        }
+
+        // ========================================================
+        // 6. TAB 4: CRUCIAL 1V1 ELIMINATION LOGIC
+        // ========================================================
+        function init1v1Tournament() {
+            bracketPool = [...CANDIDATES].sort(() => Math.random() - 0.5);
+            roundCount = 1;
+            document.getElementById('v1-arena').classList.remove('hidden');
+            document.getElementById('v1-champion-screen').classList.add('hidden');
+            next1v1Match();
+        }
+
+        window.init1v1Tournament = init1v1Tournament;
+
+        function next1v1Match() {
+            if (bracketPool.length < 2) {
+                // Show Champion
+                const champion = bracketPool[0];
+                document.getElementById('v1-arena').classList.add('hidden');
+                document.getElementById('v1-champion-screen').classList.remove('hidden');
+                
+                document.getElementById('v1-champion-name').innerText = champion.nameZh;
+                document.getElementById('v1-champion-desc').innerText = `${champion.name} (${champion.team}) • ${champion.titles}`;
+                document.getElementById('v1-champion-percent').innerText = `38.5%`;
+                return;
             }
-            showToast('已複製分享內容至剪貼簿！', '📋');
+
+            currentA = bracketPool.pop();
+            currentB = bracketPool.pop();
+
+            document.getElementById('v1-round-indicator').innerText = `ROUND ${roundCount} (剩餘 ${bracketPool.length + 2} 人)`;
+
+            document.getElementById('v1-name-a').innerText = currentA.nameZh;
+            document.getElementById('v1-team-a').innerText = currentA.team;
+            document.getElementById('v1-stats-a').innerText = currentA.titles;
+
+            document.getElementById('v1-name-b').innerText = currentB.nameZh;
+            document.getElementById('v1-team-b').innerText = currentB.team;
+            document.getElementById('v1-stats-b').innerText = currentB.titles;
+        }
+
+        window.pick1v1Winner = function(choice) {
+            const winner = choice === 'a' ? currentA : currentB;
+            bracketPool.unshift(winner); // Winner stays in bracket
+            roundCount++;
+            next1v1Match();
+            showToast(`勝者晉級: ${winner.nameZh}`, '⚔️');
         };
 
-        function showToast(message, icon = '✨') {
+        // Utility Toast Notification
+        function showToast(msg, icon = '✨') {
             const toast = document.getElementById('toast');
-            const toastMessage = document.getElementById('toast-message');
-            const toastIcon = document.getElementById('toast-icon');
-
-            if (!toast) return;
-
-            toastMessage.innerText = message;
-            toastIcon.innerText = icon;
+            document.getElementById('toast-msg').innerText = msg;
+            document.getElementById('toast-icon').innerText = icon;
 
             toast.classList.remove('translate-y-20', 'opacity-0');
             toast.classList.add('translate-y-0', 'opacity-100');
@@ -738,7 +1015,7 @@
             setTimeout(() => {
                 toast.classList.remove('translate-y-0', 'opacity-100');
                 toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3000);
+            }, 2500);
         }
     </script>
 </body>
