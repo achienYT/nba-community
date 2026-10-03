@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NBA GOAT 史上最強球員投票</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        apple: {
+                            bg: '#000000',
+                            card: 'rgba(28, 28, 30, 0.65)',
+                            cardHover: 'rgba(44, 44, 46, 0.75)',
+                            border: 'rgba(255, 255, 255, 0.12)',
+                            blue: '#0071e3',
+                            blueHover: '#0077ed',
+                            gray: '#86868b',
+                            lightGray: '#f5f5f7',
+                            text: '#f5f5f7',
+                            gold: '#ffd700'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"SF Pro Text"', '"Helvetica Neue"', 'Helvetica', 'Arial', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Apple Glassmorphism and Backdrop blur styling */
+        .glass-card {
+            background: rgba(28, 28, 30, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+        .glass-nav {
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glow-effect {
+            box-shadow: 0 0 25px -5px rgba(0, 113, 227, 0.4);
+        }
+        .gold-glow {
+            box-shadow: 0 0 30px -5px rgba(255, 215, 0, 0.3);
+        }
+        /* Custom scrollbar for modern feel */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #000;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        .dragging {
+            opacity: 0.5;
+            scale: 0.98;
+        }
+    </style>
+</head>
+<body class="bg-apple-bg text-apple-text min-h-screen flex flex-col font-sans selection:bg-apple-blue selection:text-white antialiased">
+
+    <!-- Navigation Bar -->
+    <header class="sticky top-0 z-50 glass-nav transition-all duration-300">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchView('home')">
+                <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-apple-blue to-purple-600 flex items-center justify-center font-bold text-white shadow-lg">
+                    🏀
+                </div>
+                <div>
+                    <span class="text-lg font-semibold tracking-tight text-white block leading-tight">NBA GOAT</span>
+                    <span class="text-[10px] text-apple-gray tracking-wider uppercase">Global Consensus Ranking</span>
+                </div>
+            </div>
+            
+            <nav class="flex items-center space-x-2 sm:space-x-4">
+                <button onclick="switchView('home')" id="nav-home" class="px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 bg-white/10 text-white">
+                    首頁共識
+                </button>
+                <button onclick="switchView('vote')" id="nav-vote" class="px-4 py-1.5 rounded-full text-xs sm:text-sm font-medium bg-apple-blue hover:bg-apple-blueHover text-white transition-all duration-200 glow-effect">
+                    開始投票
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-6xl w-full mx-auto px-4 sm:px-6 py-8">
+        
+        <!-- ================= HOME VIEW ================= -->
+        <section id="view-home" class="space-y-12">
+            <!-- Hero Header -->
+            <div class="text-center space-y-4 max-w-3xl mx-auto pt-6">
+                <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-widest text-apple-blue bg-apple-blue/10 border border-apple-blue/20">
+                    全球球迷即時數據
+                </span>
+                <h1 class="text-4xl sm:text-6xl font-bold tracking-tight text-white leading-tight">
+                    誰才是真正的 <br class="hidden sm:inline"/><span class="bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-500 bg-clip-text text-transparent">史上最強球員？</span>
+                </h1>
+                <p class="text-apple-gray text-base sm:text-lg max-w-xl mx-auto leading-relaxed">
+                    結合全球數千名球迷的真實排名數據，即時計算出目前全球共識前五大 GOAT。
+                </p>
+                <div class="pt-4 flex flex-wrap justify-center gap-4">
+                    <button onclick="switchView('vote')" class="px-8 py-3.5 rounded-full bg-apple-blue hover:bg-apple-blueHover text-white font-medium text-base transition-all duration-300 shadow-lg glow-effect flex items-center space-x-2 transform hover:scale-[1.02]">
+                        <span>排出你的 1 到 20 名</span>
+                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Top 5 Global Consensus Showcase -->
+            <div class="space-y-6">
+                <div class="flex items-center justify-between border-b border-white/10 pb-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                            <i data-lucide="trophy" class="w-6 h-6 text-amber-400"></i>
+                            全球平均排名 TOP 5
+                        </h2>
+                        <p class="text-xs text-apple-gray mt-0.5">數據實時根據全體玩家投出的排序平均值計算 (分數越低越靠前)</p>
+                    </div>
+                    <div id="total-votes-count" class="text-xs text-apple-gray bg-white/5 px-3 py-1.5 rounded-full border border-white/10">
+                        總投票數: 載入中...
+                    </div>
+                </div>
+
+                <!-- Top 5 Cards Grid -->
+                <div id="top5-container" class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                    <div class="col-span-full py-16 text-center text-apple-gray glass-card rounded-2xl">
+                        <i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto mb-2 text-apple-blue"></i>
+                        正在計算全球數據...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Player List Overview -->
+            <div class="space-y-6 pt-4">
+                <div class="border-b border-white/10 pb-4 flex justify-between items-end">
+                    <div>
+                        <h3 class="text-xl font-bold text-white">20 位候選傳奇球星</h3>
+                        <p class="text-xs text-apple-gray">點擊上方按鈕即可開始拖拽或排列你心目中的完整 1 ~ 20 榜單</p>
+                    </div>
+                </div>
+                <div id="candidates-grid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-3">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= VOTING VIEW ================= -->
+        <section id="view-vote" class="hidden space-y-8">
+            <!-- Header Banner -->
+            <div class="glass-card rounded-2xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                        <i data-lucide="sliders" class="w-6 h-6 text-apple-blue"></i>
+                        排列你的 GOAT 名單 (#1 ~ #20)
+                    </h2>
+                    <p class="text-xs sm:text-sm text-apple-gray mt-1">
+                        拖曳卡片或點擊箭頭調整順序。第一名為你心中最強 GOAT！
+                    </p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="resetRanking()" class="px-4 py-2 rounded-full border border-white/15 hover:bg-white/10 text-xs sm:text-sm text-apple-gray hover:text-white transition-all">
+                        重設預設
+                    </button>
+                    <button onclick="submitRanking()" class="px-6 py-2.5 rounded-full bg-apple-blue hover:bg-apple-blueHover text-white font-medium text-xs sm:text-sm transition-all glow-effect flex items-center gap-2">
+                        <i data-lucide="send" class="w-4 h-4"></i>
+                        送出投票
+                    </button>
+                </div>
+            </div>
+
+            <!-- Draggable Candidate List -->
+            <div id="ranking-list" class="space-y-2.5 max-w-3xl mx-auto">
+                <!-- Rank items populated via JavaScript -->
+            </div>
+
+            <!-- Bottom Floating Submit Button for Mobile -->
+            <div class="sticky bottom-6 z-40 flex justify-center">
+                <button onclick="submitRanking()" class="px-8 py-3.5 rounded-full bg-apple-blue hover:bg-apple-blueHover text-white font-semibold text-base transition-all shadow-2xl glow-effect flex items-center space-x-2 border border-white/20">
+                    <i data-lucide="check-circle" class="w-5 h-5"></i>
+                    <span>送出排行並查看相似度</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- ================= RESULT VIEW ================= -->
+        <section id="view-result" class="hidden space-y-10">
+            <!-- Similarity Banner -->
+            <div class="glass-card rounded-3xl p-8 text-center space-y-4 border border-white/20 gold-glow relative overflow-hidden">
+                <div class="absolute -top-24 -left-24 w-48 h-48 bg-apple-blue/20 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -bottom-24 -right-24 w-48 h-48 bg-purple-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+                <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-widest text-amber-300 bg-amber-400/10 border border-amber-400/20">
+                    投票完成，共識分析結果
+                </span>
+
+                <div class="py-2">
+                    <div class="text-xs uppercase tracking-wider text-apple-gray mb-1">你與大眾平均共識的相似度</div>
+                    <div id="similarity-score" class="text-6xl sm:text-7xl font-extrabold bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-500 bg-clip-text text-transparent">
+                        --%
+                    </div>
+                    <p id="similarity-desc" class="text-sm text-apple-gray max-w-md mx-auto mt-2">
+                        正在計算你的排名與全球球員平均分數的吻合程度...
+                    </p>
+                </div>
+
+                <div class="flex flex-wrap justify-center gap-3 pt-2">
+                    <button onclick="switchView('vote')" class="px-5 py-2.5 rounded-full bg-white/10 hover:bg-white/15 text-white text-xs sm:text-sm font-medium transition-all border border-white/10">
+                        重新調整排序
+                    </button>
+                    <button onclick="copyShareLink()" class="px-5 py-2.5 rounded-full bg-apple-blue hover:bg-apple-blueHover text-white text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5">
+                        <i data-lucide="share-2" class="w-4 h-4"></i>
+                        分享我的結果
+                    </button>
+                </div>
+            </div>
+
+            <!-- Comparison Table -->
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                        <i data-lucide="bar-chart-2" class="w-5 h-5 text-apple-blue"></i>
+                        完整 20 位球員對比榜單
+                    </h3>
+                    <span class="text-xs text-apple-gray">排名依據你提交的順序</span>
+                </div>
+
+                <div class="glass-card rounded-2xl overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs sm:text-sm">
+                            <thead class="bg-white/5 text-apple-gray uppercase text-[10px] sm:text-xs font-semibold tracking-wider border-b border-white/10">
+                                <tr>
+                                    <th class="py-3 px-4">你的排名</th>
+                                    <th class="py-3 px-4">球員</th>
+                                    <th class="py-3 px-4 text-center">全球平均名次</th>
+                                    <th class="py-3 px-4 text-center">差距分數</th>
+                                    <th class="py-3 px-4 text-right">契合評價</th>
+                                </tr>
+                            </thead>
+                            <tbody id="comparison-table-body" class="divide-y divide-white/5">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Custom Toast Message UI -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="glass-card border border-white/20 shadow-2xl rounded-2xl px-5 py-3.5 flex items-center space-x-3 text-sm text-white">
+            <span id="toast-icon">✨</span>
+            <span id="toast-message">操作完成</span>
+        </div>
+    </div>
+
+    <!-- Firebase Imports -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Firebase Configuration setup
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'nba-goat-rankings';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
+            apiKey: "demo-key",
+            authDomain: "demo.firebaseapp.com",
+            projectId: "demo-project",
+            storageBucket: "demo.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdef"
+        };
+
+        let app, db, auth, currentUser = null;
+        let isFirebaseAvailable = false;
+
+        // Candidate 20 Players List with requested teams: LeBron -> Cavs, Harden -> Rockets
+        const CANDIDATES = [
+            { id: 'jordan', name: 'Michael Jordan', nameZh: '麥可·喬丹', team: 'Bulls', position: 'SG', number: '23', titles: '6x 冠軍 | 5x MVP' },
+            { id: 'kobe', name: 'Kobe Bryant', nameZh: '柯比·布萊恩', team: 'Lakers', position: 'SG', number: '24', titles: '5x 冠軍 | 2x FMVP' },
+            { id: 'curry', name: 'Stephen Curry', nameZh: '史蒂芬·柯瑞', team: 'Warriors', position: 'PG', number: '30', titles: '4x 冠軍 | 三分球歷史紀錄' },
+            { id: 'lebron', name: 'LeBron James', nameZh: '勒布朗·詹姆斯', team: 'Cavs', position: 'SF', number: '23', titles: '4x 冠軍 | 歷史得分王' },
+            { id: 'duncan', name: 'Tim Duncan', nameZh: '提姆·鄧肯', team: 'Spurs', position: 'PF', number: '21', titles: '5x 冠軍 | 2x MVP' },
+            { id: 'magic', name: 'Magic Johnson', nameZh: '魔術強森', team: 'Lakers', position: 'PG', number: '32', titles: '5x 冠軍 | 3x MVP' },
+            { id: 'kareem', name: 'Kareem Abdul-Jabbar', nameZh: '賈霸', team: 'Lakers', position: 'C', number: '33', titles: '6x 冠軍 | 6x MVP' },
+            { id: 'shaq', name: 'Shaquille O\'Neal', nameZh: '沙奎爾·歐尼爾', team: 'Lakers', position: 'C', number: '34', titles: '4x 冠軍 | 3x FMVP' },
+            { id: 'russell', name: 'Bill Russell', nameZh: '比爾·羅素', team: 'Celtics', position: 'C', number: '6', titles: '11x 總冠軍球戒' },
+            { id: 'wilt', name: 'Wilt Chamberlain', nameZh: '張伯倫', team: 'Lakers', position: 'C', number: '13', titles: '單場100分 | 4x MVP' },
+            { id: 'durant', name: 'Kevin Durant', nameZh: '凱文·杜蘭特', team: 'Warriors', position: 'SF', number: '35', titles: '2x 冠軍 | 2x FMVP' },
+            { id: 'bird', name: 'Larry Bird', nameZh: '拉里·伯德', team: 'Celtics', position: 'SF', number: '33', titles: '3x 冠軍 | 3x MVP' },
+            { id: 'wemby', name: 'Victor Wembanyama', nameZh: '維克多·文班雅馬', team: 'Spurs', position: 'C', number: '1', titles: '最佳新人 | 未來巨星' },
+            { id: 'oscar', name: 'Oscar Robertson', nameZh: '奧斯卡·羅伯森', team: 'Bucks', position: 'PG', number: '1', titles: '大三元鼻祖 | 1x MVP' },
+            { id: 'irving', name: 'Kyrie Irving', nameZh: '凱里·歐文', team: 'Mavs', position: 'PG', number: '11', titles: '1x 冠軍 | 頂級控球技巧' },
+            { id: 'west', name: 'Jerry West', nameZh: '傑利·韋斯特', team: 'Lakers', position: 'SG', number: '44', titles: 'NBA Logo 原型' },
+            { id: 'lin', name: 'Jeremy Lin', nameZh: '林書豪', team: 'Knicks', position: 'PG', number: '17', titles: '林來瘋 Linsanity | 1x 冠軍' },
+            { id: 'jokic', name: 'Nikola Jokic', nameZh: '尼古拉·約基奇', team: 'Nuggets', position: 'C', number: '15', titles: '1x 冠軍 | 3x MVP' },
+            { id: 'sga', name: 'Shai Gilgeous-Alexander', nameZh: '亞歷山大', team: 'Thunder', position: 'PG', number: '2', titles: '全明星常客 | 頂級得分手' },
+            { id: 'harden', name: 'James Harden', nameZh: '詹姆斯·哈登', team: 'Rockets', position: 'SG', number: '13', titles: '1x MVP | 3x 得分王' }
+        ];
+
+        // State Storage
+        let userRankingOrder = [...CANDIDATES.map(c => c.id)];
+        let globalStats = {};
+        let totalVotesCount = 0;
+
+        // Default Simulated Votes for initial baseline
+        const MOCK_BASELINE_VOTES = [
+            ['jordan', 'lebron', 'kobe', 'kareem', 'magic', 'curry', 'duncan', 'shaq', 'bird', 'russell', 'wilt', 'durant', 'jokic', 'west', 'oscar', 'irving', 'harden', 'sga', 'wemby', 'lin'],
+            ['jordan', 'kobe', 'lebron', 'curry', 'duncan', 'magic', 'shaq', 'kareem', 'bird', 'wilt', 'durant', 'russell', 'jokic', 'irving', 'west', 'harden', 'oscar', 'lin', 'wemby', 'sga'],
+            ['lebron', 'jordan', 'kareem', 'curry', 'magic', 'kobe', 'duncan', 'bird', 'shaq', 'durant', 'wilt', 'russell', 'jokic', 'sga', 'harden', 'oscar', 'irving', 'west', 'wemby', 'lin']
+        ];
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            try {
+                app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+
+                // Auth Logic
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+                currentUser = auth.currentUser;
+                isFirebaseAvailable = true;
+                subscribeToGlobalVotes();
+            } catch (err) {
+                console.warn('Firebase error, using local storage fallback:', err);
+                useLocalStorageFallback();
+            }
+
+            // Render static elements
+            renderCandidatesGrid();
+            renderRankingList();
+            lucide.createIcons();
+        });
+
+        function subscribeToGlobalVotes() {
+            if (!isFirebaseAvailable || !db) return;
+
+            const votesRef = collection(db, 'artifacts', appId, 'public', 'data', 'goat_votes');
+            onSnapshot(votesRef, (snapshot) => {
+                let votesData = [];
+                snapshot.forEach(doc => {
+                    votesData.push(doc.data().ranking);
+                });
+
+                if (votesData.length === 0) {
+                    votesData = MOCK_BASELINE_VOTES;
+                }
+                calculateGlobalStats(votesData);
+            }, (error) => {
+                console.warn("Firestore snapshot error:", error);
+                useLocalStorageFallback();
+            });
+        }
+
+        function useLocalStorageFallback() {
+            const savedVotes = localStorage.getItem('goat_votes_fallback');
+            let votesData = savedVotes ? JSON.parse(savedVotes) : MOCK_BASELINE_VOTES;
+            calculateGlobalStats(votesData);
+        }
+
+        function calculateGlobalStats(votesList) {
+            totalVotesCount = votesList.length;
+            document.getElementById('total-votes-count').innerText = `總投票數: ${totalVotesCount} 票`;
+
+            let scores = {};
+            CANDIDATES.forEach(c => {
+                scores[c.id] = { sum: 0, count: 0, avg: 20 };
+            });
+
+            votesList.forEach(ranking => {
+                ranking.forEach((playerId, index) => {
+                    if (scores[playerId]) {
+                        scores[playerId].sum += (index + 1);
+                        scores[playerId].count += 1;
+                    }
+                });
+            });
+
+            Object.keys(scores).forEach(pId => {
+                if (scores[pId].count > 0) {
+                    scores[pId].avg = scores[pId].sum / scores[pId].count;
+                }
+            });
+
+            globalStats = scores;
+            renderTop5Showcase();
+        }
+
+        function renderTop5Showcase() {
+            const container = document.getElementById('top5-container');
+            if (!container) return;
+
+            const sortedCandidates = [...CANDIDATES].sort((a, b) => {
+                const avgA = globalStats[a.id]?.avg ?? 20;
+                const avgB = globalStats[b.id]?.avg ?? 20;
+                return avgA - avgB;
+            });
+
+            const top5 = sortedCandidates.slice(0, 5);
+            container.innerHTML = '';
+
+            top5.forEach((player, index) => {
+                const avgRank = (globalStats[player.id]?.avg || (index + 1)).toFixed(2);
+                const rankNum = index + 1;
+                
+                let rankBadgeColor = 'bg-white/10 text-white';
+                let cardGlow = '';
+                if (rankNum === 1) {
+                    rankBadgeColor = 'bg-amber-400 text-black font-extrabold';
+                    cardGlow = 'border-amber-400/40 shadow-xl shadow-amber-500/10';
+                } else if (rankNum === 2) {
+                    rankBadgeColor = 'bg-slate-300 text-black font-bold';
+                } else if (rankNum === 3) {
+                    rankBadgeColor = 'bg-amber-700 text-white font-bold';
+                }
+
+                const cardHTML = `
+                    <div class="glass-card rounded-2xl p-4 flex flex-col justify-between space-y-4 hover:border-white/30 transition-all duration-300 ${cardGlow}">
+                        <div class="flex items-center justify-between">
+                            <span class="w-7 h-7 rounded-full ${rankBadgeColor} flex items-center justify-center text-xs">
+                                #${rankNum}
+                            </span>
+                            <span class="text-[10px] text-apple-gray font-mono bg-white/5 px-2 py-0.5 rounded-full border border-white/10">
+                                平均: ${avgRank} 名
+                            </span>
+                        </div>
+
+                        <div class="space-y-1">
+                            <div class="text-xs text-apple-blue font-semibold tracking-wider uppercase">${player.team}</div>
+                            <h3 class="text-lg font-bold text-white tracking-tight">${player.nameZh}</h3>
+                            <p class="text-[11px] text-apple-gray">${player.name}</p>
+                        </div>
+
+                        <div class="pt-2 border-t border-white/10 flex items-center justify-between text-[11px] text-apple-gray">
+                            <span>${player.position} #${player.number}</span>
+                            <span class="text-emerald-400 font-medium">${player.titles.split('|')[0]}</span>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += cardHTML;
+            });
+        }
+
+        function renderCandidatesGrid() {
+            const grid = document.getElementById('candidates-grid');
+            if (!grid) return;
+
+            grid.innerHTML = CANDIDATES.map(player => `
+                <div class="glass-card rounded-xl p-3 flex flex-col justify-between hover:bg-apple-cardHover transition-all">
+                    <div>
+                        <div class="text-[10px] text-apple-gray font-mono">${player.position} | #${player.number}</div>
+                        <div class="font-bold text-sm text-white truncate">${player.nameZh}</div>
+                        <div class="text-[11px] text-apple-gray truncate">${player.name}</div>
+                    </div>
+                    <div class="text-[10px] text-apple-blue font-medium mt-2 truncate">${player.team}</div>
+                </div>
+            `).join('');
+        }
+
+        window.renderRankingList = function() {
+            const container = document.getElementById('ranking-list');
+            if (!container) return;
+
+            container.innerHTML = '';
+            userRankingOrder.forEach((playerId, index) => {
+                const player = CANDIDATES.find(c => c.id === playerId);
+                if (!player) return;
+
+                const itemHTML = `
+                    <div draggable="true" 
+                         data-id="${player.id}" 
+                         data-index="${index}"
+                         class="draggable-item glass-card rounded-xl p-3.5 flex items-center justify-between cursor-grab active:cursor-grabbing hover:bg-apple-cardHover transition-all border border-white/10 select-none">
+                        
+                        <div class="flex items-center space-x-3.5">
+                            <span class="w-7 h-7 rounded-full ${index < 3 ? 'bg-apple-blue text-white' : 'bg-white/10 text-apple-gray'} font-bold text-xs flex items-center justify-center shrink-0">
+                                ${index + 1}
+                            </span>
+                            <div>
+                                <div class="font-semibold text-sm text-white flex items-center gap-2">
+                                    <span>${player.nameZh}</span>
+                                    <span class="text-xs font-normal text-apple-gray">(${player.name})</span>
+                                </div>
+                                <div class="text-[11px] text-apple-gray flex items-center gap-2 mt-0.5">
+                                    <span class="text-apple-blue font-medium">${player.team}</span>
+                                    <span>•</span>
+                                    <span>${player.position} #${player.number}</span>
+                                    <span>•</span>
+                                    <span class="text-slate-300 truncate max-w-[150px] sm:max-w-none">${player.titles}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Touch Control Buttons -->
+                        <div class="flex items-center space-x-1 sm:space-x-2">
+                            <button onclick="movePlayer(${index}, -1)" class="p-1.5 rounded-lg bg-white/5 hover:bg-white/15 text-apple-gray hover:text-white transition-all disabled:opacity-20" ${index === 0 ? 'disabled' : ''}>
+                                <i data-lucide="chevron-up" class="w-4 h-4"></i>
+                            </button>
+                            <button onclick="movePlayer(${index}, 1)" class="p-1.5 rounded-lg bg-white/5 hover:bg-white/15 text-apple-gray hover:text-white transition-all disabled:opacity-20" ${index === userRankingOrder.length - 1 ? 'disabled' : ''}>
+                                <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                            </button>
+                            <div class="cursor-grab text-white/30 hover:text-white/60 p-1 pl-2">
+                                <i data-lucide="grip-vertical" class="w-5 h-5"></i>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += itemHTML;
+            });
+
+            setupDragAndDropEvents();
+            lucide.createIcons();
+        };
+
+        window.movePlayer = function(index, direction) {
+            const targetIndex = index + direction;
+            if (targetIndex < 0 || targetIndex >= userRankingOrder.length) return;
+
+            const temp = userRankingOrder[index];
+            userRankingOrder[index] = userRankingOrder[targetIndex];
+            userRankingOrder[targetIndex] = temp;
+
+            renderRankingList();
+        };
+
+        window.resetRanking = function() {
+            userRankingOrder = [...CANDIDATES.map(c => c.id)];
+            renderRankingList();
+            showToast('已重設為預設名單', '🔄');
+        };
+
+        function setupDragAndDropEvents() {
+            const list = document.getElementById('ranking-list');
+            let draggedItem = null;
+
+            const items = list.querySelectorAll('.draggable-item');
+
+            items.forEach(item => {
+                item.addEventListener('dragstart', (e) => {
+                    draggedItem = item;
+                    item.classList.add('dragging');
+                    e.dataTransfer.effectAllowed = 'move';
+                });
+
+                item.addEventListener('dragend', () => {
+                    item.classList.remove('dragging');
+                    draggedItem = null;
+                    const newOrder = Array.from(list.querySelectorAll('.draggable-item')).map(el => el.dataset.id);
+                    userRankingOrder = newOrder;
+                    renderRankingList();
+                });
+
+                item.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    const afterElement = getDragAfterElement(list, e.clientY);
+                    if (afterElement == null) {
+                        list.appendChild(draggedItem);
+                    } else {
+                        list.insertBefore(draggedItem, afterElement);
+                    }
+                });
+            });
+        }
+
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('.draggable-item:not(.dragging)')];
+
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+
+        window.submitRanking = async function() {
+            showToast('正在傳送投票紀錄...', '🚀');
+
+            try {
+                if (isFirebaseAvailable && db && currentUser) {
+                    const voteDocRef = doc(collection(db, 'artifacts', appId, 'public', 'data', 'goat_votes'), currentUser.uid);
+                    await setDoc(voteDocRef, {
+                        userId: currentUser.uid,
+                        ranking: userRankingOrder,
+                        timestamp: new Date().toISOString()
+                    });
+                } else {
+                    const localVotes = JSON.parse(localStorage.getItem('goat_votes_fallback') || '[]');
+                    localVotes.push(userRankingOrder);
+                    localStorage.setItem('goat_votes_fallback', JSON.stringify(localVotes));
+                    calculateGlobalStats(localVotes);
+                }
+            } catch (err) {
+                console.error("Error saving vote:", err);
+            }
+
+            calculateSimilarityAndRenderComparison();
+            switchView('result');
+            showToast('投票成功！已更新數據', '✅');
+        };
+
+        function calculateSimilarityAndRenderComparison() {
+            const tbody = document.getElementById('comparison-table-body');
+            if (!tbody) return;
+
+            tbody.innerHTML = '';
+            let totalDifference = 0;
+
+            userRankingOrder.forEach((playerId, userIndex) => {
+                const userRank = userIndex + 1;
+                const player = CANDIDATES.find(c => c.id === playerId);
+                const avgRank = globalStats[playerId]?.avg || userRank;
+                const avgRankFormatted = avgRank.toFixed(1);
+
+                const diff = Math.abs(userRank - avgRank);
+                totalDifference += diff;
+
+                let badgeHTML = '';
+                if (Math.abs(userRank - avgRank) < 1.0) {
+                    badgeHTML = `<span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[10px]">極高度共識</span>`;
+                } else if (userRank < avgRank) {
+                    badgeHTML = `<span class="px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30 text-[10px]">你評價較高</span>`;
+                } else {
+                    badgeHTML = `<span class="px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-400 border border-purple-500/30 text-[10px]">你評價較低</span>`;
+                }
+
+                const diffDisplay = (avgRank - userRank).toFixed(1);
+                let diffText = diffDisplay > 0 ? `+${diffDisplay}` : `${diffDisplay}`;
+                if (Math.abs(diffDisplay) == 0) diffText = "完全一致";
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-white/5 transition-colors">
+                        <td class="py-3 px-4 font-bold text-apple-blue">#${userRank}</td>
+                        <td class="py-3 px-4">
+                            <div class="font-semibold text-white">${player.nameZh}</div>
+                            <div class="text-[10px] text-apple-gray">${player.name} (${player.team})</div>
+                        </td>
+                        <td class="py-3 px-4 text-center font-mono text-apple-gray">第 ${avgRankFormatted} 名</td>
+                        <td class="py-3 px-4 text-center font-mono ${diffDisplay > 0 ? 'text-emerald-400' : diffDisplay < 0 ? 'text-rose-400' : 'text-apple-gray'}">
+                            ${diffText}
+                        </td>
+                        <td class="py-3 px-4 text-right">${badgeHTML}</td>
+                    </tr>
+                `;
+            });
+
+            const maxPossibleDiff = 130; 
+            const similarityPercent = Math.max(0, Math.min(100, Math.round(100 - (totalDifference / maxPossibleDiff * 100))));
+
+            const scoreElem = document.getElementById('similarity-score');
+            const descElem = document.getElementById('similarity-desc');
+
+            scoreElem.innerText = `${similarityPercent}%`;
+
+            if (similarityPercent >= 85) {
+                descElem.innerText = "你的籃球審美與主流球迷高度契合！你是標準的集體共識代表！";
+            } else if (similarityPercent >= 70) {
+                descElem.innerText = "你具備獨到的專業觀點，大部分排名與主流球迷相當貼近。";
+            } else {
+                descElem.innerText = "你的獨特獨家見解獨樹一幟！不盲從大眾主流評價！";
+            }
+        }
+
+        window.switchView = function(viewName) {
+            document.getElementById('view-home').classList.add('hidden');
+            document.getElementById('view-vote').classList.add('hidden');
+            document.getElementById('view-result').classList.add('hidden');
+
+            const targetView = document.getElementById(`view-${viewName}`);
+            if (targetView) targetView.classList.remove('hidden');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            const navHome = document.getElementById('nav-home');
+            const navVote = document.getElementById('nav-vote');
+
+            if (viewName === 'home') {
+                navHome.className = "px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 bg-white/10 text-white";
+                navVote.className = "px-4 py-1.5 rounded-full text-xs sm:text-sm font-medium bg-apple-blue hover:bg-apple-blueHover text-white transition-all duration-200 glow-effect";
+            } else if (viewName === 'vote') {
+                navHome.className = "px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 text-apple-gray hover:text-white";
+                navVote.className = "px-4 py-1.5 rounded-full text-xs sm:text-sm font-medium bg-apple-blue hover:bg-apple-blueHover text-white transition-all duration-200 glow-effect";
+            }
+        };
+
+        window.copyShareLink = function() {
+            const dummyText = `我剛剛參加了 NBA GOAT 史上最強球員投票！快來測測你與全球球迷的共識度！`;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(dummyText);
+            } else {
+                const textarea = document.createElement('textarea');
+                textarea.value = dummyText;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+            }
+            showToast('已複製分享內容至剪貼簿！', '📋');
+        };
+
+        function showToast(message, icon = '✨') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            const toastIcon = document.getElementById('toast-icon');
+
+            if (!toast) return;
+
+            toastMessage.innerText = message;
+            toastIcon.innerText = icon;
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
